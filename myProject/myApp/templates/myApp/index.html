@@ -1,0 +1,334 @@
+{% extends 'myApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Home Intro -->
+<div id="home" class="home-intro">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="content">
+                    <h2><span class="color-highlight">Supercharge</span> Your</h2>
+                    <h2>Business <span class="color-highlight">with iRiseUp.AI</span></h2>
+                    <p>Imagine having 13 expert AIs—each a specialist in its field—working tirelessly to streamline, support, and scale every corner of your business. Welcome to the future of automation and efficiency.</p>
+                    <ul>
+                        <li><a href="#" class="button">Get Started</a></li>
+                        <li><a href="#" class="button button-secondary">Free Trial</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="content-image">
+                    <img src="{% static 'assets/images/header-img.png' %}" alt="Header Image">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End Home Intro -->
+
+<div id="about" class="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-xs-12">
+                <div class="content-image">
+                    <img src="{% static 'assets/images/about-img.png' %}" alt="About Image">
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xs-12">
+                <div class="content">
+                    <h3>Why Choose iRiseUp.AI?</h3>
+                    <p>Imagine a world where your team is tireless, always focused, and loaded with expertise—exactly when and where you need it. That’s iRiseUp.AI.</p>
+                    <p>Our 13 specialized AI assistants cover everything from personal support to environmental impact. Whatever the task, there’s an AI expert for it, ready to work alongside you. It’s not just assistance; it’s empowerment.</p>
+                    <ul>
+                        <li><span class="circle-list"></span>Expertise tailored for your needs</li>
+                        <li><span class="circle-list"></span>Seamless integration with daily tasks</li>
+                        <li><span class="circle-list"></span>Always on—no breaks needed!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="services" class="services section-bottom-only">
+    <div class="section-title">
+        <h5 class="title-top">Our Promise To You</h5>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-ribbon"></i>
+
+                    </div>
+                    <h5>14-Day Money-Back Guarantee</h5>
+                    <p>No questions asked—if you’re not satisfied, we’ve got you covered with a risk-free guarantee.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-headset"></i>
+                    </div>
+                    <h5>24/7 Customer Support</h5>
+                    <p>Our support team is always here, praised for being both friendly and helpful—just a message away.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-timer"></i>
+                    </div>
+                    <h5>Instant Delivery</h5>
+                    <p>Your bots are ready to start within 3 minutes of your purchase—instant access to your AI workforce.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="portfolio" class="portfolio section-bottom-only">
+    <div class="container">
+        <div class="section-title">
+            <h5 class="title-top">Meet Your New AI-Powered Workforce</h5>
+            <h3>From virtual assistants to social media gurus, our diverse AI squad has you covered:</h3>
+        </div>
+        <div class="portfolio-filter-menu">
+            <ul>
+                <li data-filter="all" class="active">
+                    <span>All</span>
+                </li>
+                <li data-filter="1">
+                    <span>Web Design</span>
+                </li>
+                <li data-filter="2">
+                    <span>Marketing</span>
+                </li>
+                <li data-filter="3">
+                    <span>Branding</span>
+                </li>
+            </ul>
+        </div>
+        <div class="row no-gutters filter-container">
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="3">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio1.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio1.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Color Wall</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="1">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio2.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio2.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Smooth Flower</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="2">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio3.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio3.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Vintage Building</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="3">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio4.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio4.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Theo Digital</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="2">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio5.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio5.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Painted Wall</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12 filtr-item" data-category="1">
+                <div class="content-image">
+                    <a href="{% static 'assets/images/portfolio6.jpg' %}" class="portfolio-popup">
+                        <img src="{% static 'assets/images/portfolio6.jpg' %}" alt="portfolio-image">
+                        <div class="image-overlay"></div>
+                        <div class="image-caption">
+                            <h4>Blue Lolipop</h4>
+                            <span>Branding</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="services" class="services section-bottom-only">
+    <div class="section-title">
+        <h5 class="title-top">Are AI Workers Better Than Humans?</h5>
+        <h3>You Be The Judge:</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <div class="content">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-school"></i>
+                    </div>
+                    <h5>Deep Specialization</h5>
+                    <p>Trained on over 10,000 business resources, our AI workers bring specialized knowledge that rivals industry veterans.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-flash"></i>
+                    </div>
+                    <h5>Lightning-Fast Responses</h5>
+                    <p>Average response time under 10 milliseconds. Instant answers, no coffee breaks needed!</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-eye"></i>
+                    </div>
+                    <h5>Laser-Focused Accuracy</h5>
+                    <p>Tailored algorithms for each business function deliver precision that human experts can only dream of.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <div class="content">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-rocket"></i>
+                    </div>
+                    <h5>Cutting-Edge AI Technology</h5>
+                    <p>Powered by ChatGPT-4o, our AI stays ahead of the technological curve to bring you tomorrow’s solutions today.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-infinite"></i>
+                    </div>
+                    <h5>Pay Once, Hire Forever</h5>
+                    <p>Lifetime access with no monthly fees or wages. One payment, unlimited expertise.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="words-section section-bottom-only">
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="col-md-8 col-sm-12 align-self-center">
+                    <div class="words-wrap">
+                        <h4>Let's create something exceptional together</h4>
+                        <h4>Your best project starts here</h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12 align-self-center">
+                    <div class="button-wrap">
+                        <button class="button">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Contact Section -->
+<div id="contact" class="contact section-bottom-only">
+    <div class="container">
+        <div class="section-title">
+            <h5 class="title-top">Contact Us</h5>
+            <h3>Let’s Connect and Create Magic Together</h3>
+        </div>
+        <div class="box-content">
+            <div class="row">
+                <div class="col-md-4 col-sm-12">
+                    <div class="content">
+                        <h5>Our Location</h5>
+                        <p>121 King Street, Melbourne Victoria 3000, Australia</p>
+                        <h5>Call Us</h5>
+                        <p>+61 3 8376 6284</p>
+                        <h5>Email Us</h5>
+                        <p>support@example.com</p>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-12">
+                    <div class="content-right">
+                        <form action="{% url 'contact' %}" class="contact-form" id="contact-form" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col">
+                                    <div id="first-name-field">
+                                        <input type="text" placeholder="Your Name" name="form-name" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div id="email-field">
+                                        <input type="email" placeholder="Your Email Address" name="form-email" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div id="subject-field">
+                                        <input type="text" placeholder="Subject" name="form-subject" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div id="message-field">
+                                        <textarea cols="30" rows="5" id="form-message" name="form-message" placeholder="Your Message" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button" type="submit" id="submit" name="submit">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End Contact Section -->
+{% endblock %}
