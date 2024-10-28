@@ -17,7 +17,13 @@ SECRET_KEY = 'django-insecure-*9l6wdsi+%0$m^&^wv@u3&yswjt2_l&*3-0@hs_88%3(y!#6eb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'ai-iriseup-production.up.railway.app',
+    '127.0.0.1',  # If you also want to allow local development
+    'localhost',
+]
+
+CSRF_TRUSTED_ORIGINS = ['https://ai-iriseup-production.up.railway.app']
 
 
 # Application definition
