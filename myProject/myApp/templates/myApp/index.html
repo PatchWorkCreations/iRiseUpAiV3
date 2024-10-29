@@ -2,6 +2,398 @@
 {% load static %}
 
 {% block content %}
+<head>
+    <script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>
+
+    <!-- jQuery (required for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<style>
+    /* Container */
+.pricing-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+/* Pricing Card Styling */
+.pricing-card {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 250px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+}
+
+.pricing-card h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.pricing-card .price {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+.pricing-card p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Discount Badge */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+/* Select Button */
+.card-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: auto; /* Pushes the button to the bottom */
+    transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+    background-color: #555;
+}
+
+.card-radio {
+    display: none; /* Hides the radio button */
+}
+
+
+/* Highlighted Yearly Plan */
+.pricing-card.highlight {
+    border: 2px solid #ff9800;
+    background-color: #fffaf0;
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.pricing-card.highlight .price {
+    color: #ff9800;
+}
+
+.most-popular {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #ff9800;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 8px;
+    text-transform: uppercase;
+}
+
+/* Hover Effect */
+.pricing-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Header Banner */
+.header-banner {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.header-banner h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+    color: #ff9800; /* Gold color for emphasis */
+}
+
+.header-banner p {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #f7f7f7;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensure it appears above other content */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Width of the modal */
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    cursor: pointer;
+}
+
+
+.plan-info p, .subscription-info p {
+    font-size: 16px;
+    color: #333;
+}
+
+.payment-selection-btn, .btn-submit {
+    background-color: #5860F8;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 10px auto; /* Centers the button */
+    width: 100%; /* Makes the button full-width */
+    max-width: 300px; /* Optional: limits the width to avoid being too wide */
+    transition: background-color 0.3s;
+    display: block; /* Ensures the button spans across */
+    text-align: center;
+}
+
+
+.payment-selection-btn:hover, .btn-submit:hover {
+    background-color: #434ad8;
+}
+
+.card-icons img {
+    width: 40px;
+    margin: 5px;
+}
+
+.subscription-terms p {
+    font-size: 12px;
+    color: #666;
+}
+
+.serv-icon i {
+    font-size: 48px;
+    color: #5860F8;
+    margin-bottom: 10px;
+}
+
+#checkout-modal .form-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+#checkout-modal .form-group input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.safe-icon {
+    width: 20px;
+    margin-right: 5px;
+}
+
+#checkout-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: auto;
+}
+
+
+.pay-safe {
+    text-align: center;
+    align-items: center;
+    background-color: #f4fdf4; /* Light green background color */
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #74b948; /* Green color for text */
+    margin-top: 10px; /* Space above the section */
+}
+
+.pay-safe .safe-icon {
+    width: 20px; /* Adjust the icon size as needed */
+    height: 20px;
+    margin-right: 8px; /* Space between the icon and the text */
+}
+
+
+.card-icons {
+    display: flex;
+    justify-content: space-between; /* Space out the icons evenly */
+    align-items: center; /* Align them vertically centered */
+    flex-wrap: wrap; /* Allow wrapping if needed on smaller screens */
+}
+
+.card-icons img {
+    width: 40px; /* Adjust the width as needed */
+    margin: 5px; /* Adjust the spacing between images */
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px; /* Adjust modal width as needed */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3{
+    padding-top: 8px;
+    font-size: 20px;
+    text-align: center;
+}
+
+
+/* Header styles */
+.modal-header {
+
+    display: flex;
+    justify-content: center; 
+    align-items: center; /* Align items vertically */
+    position: relative; /* Position elements within the header */
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
+.modal-header .close {
+    padding: 10px 15px;
+    background-color: #f3f4f6;
+    position: absolute;
+    left: 15px; /* Adjust the position of the close button to the left */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-header .close:hover {
+    color: black;
+}
+
+
+/* Body styles */
+.modal-body {
+    padding: 15px;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.modal-body h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.modal-body h2 .highlight {
+    color: #5860F8; /* Purple color */
+}
+
+.btn-submit {
+    background-color: #5860F8;
+    color: white;
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.btn-submit:hover {
+    background-color: #3c4ab8;
+}
+
+</style>
 <!-- Home Intro -->
 <div id="home" class="home-intro">
     <div class="container">
@@ -192,6 +584,7 @@
     </div>
 </div>
 
+
 <div id="services" class="services section-bottom-only">
     <div class="section-title">
         <h5 class="title-top">Are AI Workers Better Than Humans?</h5>
@@ -251,84 +644,594 @@
 </div>
 
 
-<div class="words-section section-bottom-only">
+
+<div class="header-banner">
+    <h1>PICK YOUR AI BOTS BUNDLE! 🤖</h1>
+    <p>Exclusive Limited-Time Offer – Get 80% OFF on Your Perfect AI Team Today!</p>
+</div>
+
+<div id="plan-selection-section" class="pricing-container">
+    <!-- 1-Week Plan -->
+    <div class="pricing-card">
+        <label for="1-week-plan">
+            <h3>1-WEEK PLAN</h3>
+            <div class="price">$12.87</div>
+            <p>$1.84 per day</p>
+            <input type="radio" id="1-week-plan" name="plan" value="1-week" class="card-radio">
+            <!-- Button is now part of the label -->
+           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        </label>
+    </div>
+
+    <!-- 4-Week Plan (Most Popular) -->
+    <div class="pricing-card highlight">
+        <label for="4-week-plan">
+            <div class="most-popular">👍 MOST POPULAR</div>
+            <h3>4-WEEK PLAN</h3>
+            <div class="price">$37.95</div>
+            <p>$1.36 per day</p>
+            <input type="radio" id="4-week-plan" name="plan" value="4-week" checked class="card-radio">
+           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        </label>
+    </div>
+
+    <!-- 12-Week Plan -->
+    <div class="pricing-card">
+        <label for="12-week-plan">
+            <h3>12-WEEK PLAN</h3>
+            <div class="price">$97.00</div>
+            <p>$1.15 per day</p>
+            <input type="radio" id="12-week-plan" name="plan" value="12-week" class="card-radio">
+           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        </label>
+    </div>
+
+    <!-- Lifetime Access Plan -->
+    <div class="pricing-card">
+        <label for="lifetime-plan">
+            <h3 class="lifetime-plan-header">LIFETIME ACCESS</h3>
+            <p class="lifetime-plan-description">One-time payment for unlimited access</p>
+            <div class="price">$297.00</div>
+            <input type="radio" id="lifetime-plan" name="plan" value="lifetime" class="card-radio">
+           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        </label>
+    </div>
+</div>
+
+
+
+<div id="services" class="services section-bottom-only">
+    <div class="section-title">
+        <h5 class="title-top">Our Promise To You</h5>
+    </div>
     <div class="container">
-        <div class="content">
-            <div class="row">
-                <div class="col-md-8 col-sm-12 align-self-center">
-                    <div class="words-wrap">
-                        <h4>Let's create something exceptional together</h4>
-                        <h4>Your best project starts here</h4>
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-shield"></i>
                     </div>
+                    <h5>14-Day Money-Back Guarantee</h5>
+                    <p>No questions asked—if you’re not satisfied, we’ve got you covered with a risk-free guarantee.</p>
                 </div>
-                <div class="col-md-4 col-sm-12 align-self-center">
-                    <div class="button-wrap">
-                        <button class="button">Contact Us</button>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-headset"></i>
                     </div>
+                    <h5>24/7 Customer Support</h5>
+                    <p>Our support team is always here, praised for being both friendly and helpful—just a message away.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="serv-icon">
+                        <i class="icon ion-ios-timer"></i>
+                    </div>
+                    <h5>Instant Delivery</h5>
+                    <p>Your bots are ready to start within 3 minutes of your purchase—instant access to your AI workforce.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="checkout-modal" class="modal" style="display:none;">
+<div class="modal-content">
+<div class="modal-header">
+<span id="close-modal" class="close">&times;</span>
+<h2>Checkout</h2>
+</div>
+<h3><span style="color: #5860F8;">91% of users </span>are satisfied with the plan and stay with us after its completion</h3>
 
-<!-- Contact Section -->
-<div id="contact" class="contact section-bottom-only">
-    <div class="container">
-        <div class="section-title">
-            <h5 class="title-top">Contact Us</h5>
-            <h3>Let’s Connect and Create Magic Together</h3>
+<div id="payment-selection">
+<button id="card-button" class="payment-selection-btn">Pay with Card</button>
+<!--       <button id="paypal-button" class="payment-selection-btn">Pay with PayPal</button> --> 
+</div>
+
+<div id="card-payment" class="payment-option" style="display:none;">
+<h3 style="text-align: center;">Pay with Card</h3>
+<!-- Inserting the six images here -->
+<div class="card-icons">
+    <img src="{% static 'assets/images/card_icons/1.svg' %}" alt="Card Icon 1" />
+    <img src="{% static 'assets/images/card_icons/2.svg' %}" alt="Card Icon 2" />
+    <img src="{% static 'assets/images/card_icons/3.svg' %}" alt="Card Icon 3" />
+    <img src="{% static 'assets/images/card_icons/4.svg' %}" alt="Card Icon 4" />
+    <img src="{% static 'assets/images/card_icons/5.svg' %}" alt="Card Icon 5" />
+    <img src="{% static 'assets/images/card_icons/6.svg' %}" alt="Card Icon 6" />
+</div>
+<div class="form-container">
+    <h3>Fill Out Your Information</h3>
+    <form id="payment-form">
+        <div class="form-group">
+            <label for="givenName">First Name</label>
+            <input type="text" id="givenName" name="givenName" placeholder="e.g. John" class="form-control" required>
         </div>
-        <div class="box-content">
-            <div class="row">
-                <div class="col-md-4 col-sm-12">
-                    <div class="content">
-                        <h5>Our Location</h5>
-                        <p>121 King Street, Melbourne Victoria 3000, Australia</p>
-                        <h5>Call Us</h5>
-                        <p>+61 3 8376 6284</p>
-                        <h5>Email Us</h5>
-                        <p>support@example.com</p>
-                    </div>
-                </div>
-                <div class="col-md-8 col-sm-12">
-                    <div class="content-right">
-                        <form action="{% url 'contact' %}" class="contact-form" id="contact-form" method="post">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col">
-                                    <div id="first-name-field">
-                                        <input type="text" placeholder="Your Name" name="form-name" required>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div id="email-field">
-                                        <input type="email" placeholder="Your Email Address" name="form-email" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div id="subject-field">
-                                        <input type="text" placeholder="Subject" name="form-subject" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div id="message-field">
-                                        <textarea cols="30" rows="5" id="form-message" name="form-message" placeholder="Your Message" required></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="button" type="submit" id="submit" name="submit">Send Message</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="familyName">Last Name</label>
+            <input type="text" id="familyName" name="familyName" placeholder="e.g. Doe" class="form-control" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="addressLine1">Address Line 1</label>
+            <input type="text" id="addressLine1" name="addressLine1" placeholder="e.g. 1234 Elm Street" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="e.g. New York" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" placeholder="e.g. NY" class="form-control" required>
+        </div>                    
+        <div class="form-group">
+            <label for="countryCode">Country Code</label>
+            <input type="text" id="countryCode" name="countryCode" placeholder="ex. US" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" name="phone" placeholder="e.g. +1 234 567 8900 (US)" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="e.g. yourname@example.com" class="form-control" required>
+        </div>                    
+        <div id="card-container" class="form-group"></div>
+        <button type="submit" class="btn-submit">Pay Now</button>
+    </form>
+</div>
+
+
+<div class="pay-safe">
+    <img src="{% static 'assets/images/card_icons/check_icon.png' %}" alt="Safe Icon" class="safe-icon" />
+    <span>Pay safe & secure</span>
+</div>            
+</div>
+
+
+<div id="paypal-payment" class="payment-option" style="display:none;">
+<h3 style="text-align: center;">Pay with PayPal</h3>
+<div id="paypal-button-container"></div> <!-- PayPal button container -->
+<div id="subscription-status" style="display: none; color: green; text-align: center; margin-top: 15px;"></div>
+</div>
+
+<!-- Add the subscription terms language below the payment options -->
+<div class="subscription-terms mt-4">
+<p style="text-align: center; font-size: 12px;">You agree that <strong id="selected-plan-price">$39.99</strong> will be as an intro offer, then <strong id="selected-plan-renewal-price">$39.99</strong> will be automatically billed every 4-weeks until you cancel in settings. <a href="#">Subscription Terms</a>.</p>
+</div>
+
+</div>
 </div>
 
 <!-- End Contact Section -->
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('checkout-modal');
+    const getPlanButtons = document.querySelectorAll('.get-plan-btn');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const cardBtn = document.getElementById('card-button');
+    const paypalBtn = document.getElementById('paypal-button');
+    const cardPaymentSection = document.getElementById('card-payment');
+    const paypalPaymentSection = document.getElementById('paypal-payment');
+    let squareInitialized = false;
+    let paypalInitialized = false;
+
+    // Initialize payment options visibility
+    cardPaymentSection.style.display = 'none';
+    paypalPaymentSection.style.display = 'none';
+
+    // Show modal when "GET MY PLAN" buttons are clicked
+    getPlanButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            modal.style.display = 'block';
+        });
+    });
+
+    // Square payment setup function
+    async function setupSquarePayments() {
+        if (squareInitialized) return; // Prevent re-initialization
+        const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
+        const card = await payments.card();
+        await card.attach('#card-container');
+
+        const payButton = document.getElementById('payment-form').querySelector('button[type="submit"]');
+        payButton.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                const result = await card.tokenize();
+                if (result.status === 'OK') {
+                    // Get selected plan and determine the amount
+                    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+                    const amount = determineAmountBasedOnPlan(selectedPlan);
+
+                    // New: Verify the buyer using SCA with CHARGE_AND_STORE intent
+                    const verificationToken = await verifyBuyer(payments, result.token, amount);
+
+                    // Send the payment request with the verification token
+                    const response = await fetch('/process-payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({
+                            source_id: result.token,
+                            plan: selectedPlan,
+                            amount: amount,
+                            verification_token: verificationToken  // New: Include verification token
+                        }),
+                    });
+
+                    const jsonResult = await response.json();
+
+                if (jsonResult.success) {
+                    window.location.href = '/success/';
+                } else {
+                    handlePaymentError(jsonResult.error);  // Handle errors in a friendly way
+                }
+            } else {
+                alert('Tokenization failed: ' + result.errors[0].message);
+            }
+        } catch (e) {
+            console.error(e.message);
+            alert('Payment failed: ' + e.message);
+        }
+    });
+    squareInitialized = true; // Set flag to prevent re-initialization
+}
+
+function handlePaymentError(error) {
+    let userMessage = 'An error occurred during payment.';
+    
+    if (error.includes('CARD_DECLINED')) {
+        userMessage = 'Your card was declined. Please try another payment method.';
+    } else if (error.includes('INSUFFICIENT_FUNDS')) {
+        userMessage = 'Insufficient funds. Please check your balance or use a different card.';
+    } else if (error.includes('EXPIRED_CARD')) {
+        userMessage = 'Your card has expired. Please use a different card.';
+    } else if (error.includes('NETWORK_ERROR')) {
+        userMessage = 'There was a network issue. Please try again later.';
+    } else if (error.includes('FRAUD_REJECTED')) {
+        userMessage = 'Your payment was rejected due to suspected fraud. Please contact your bank.';
+    }
+
+    alert(userMessage);  // Display user-friendly error message
+}
+
+    // Function to determine the amount based on the selected plan
+    function determineAmountBasedOnPlan(plan) {
+    if (plan === '1-week') {
+        return 1287;  // $12.87 in cents
+    } else if (plan === '4-week') {
+        return 3795;  // $37.95 in cents
+    } else if (plan === '12-week') {
+        return 9700;  // $97.00 in cents
+    } else if (plan === 'lifetime') {
+        return 29700;  // $297.00 in cents
+    } else {
+        return 0;  // Default to 0 for unrecognized plans
+    }
+}
+
+
+
+    // Function to set the selected plan in the session via AJAX
+        function setSelectedPlanInSession(plan) {
+            fetch('/set-selected-plan/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ plan: plan }),
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Plan set in session successfully');
+                } else {
+                    console.error('Failed to set plan in session');
+                }
+            });
+        }
+
+        // Event listener for plan selection
+        //document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+        //    planInput.addEventListener('change', function() {
+        //        setSelectedPlanInSession(this.value);
+        //    });
+        //});
+
+        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+            planInput.addEventListener('change', function() {
+                setSelectedPlanInSession(this.value);  
+            });
+        });
+
+
+
+    // New: Add the verifyBuyer function with the correct amount and CHARGE_AND_STORE intent
+    async function verifyBuyer(payments, token, amount) {
+        const verificationDetails = {
+            amount: (amount / 100).toFixed(2),  // Convert cents to dollars
+            currencyCode: 'USD',  // Ensure this matches the currency used in the transaction
+            intent: 'CHARGE_AND_STORE',  // Intent for charging and storing the card
+            billingContact: {
+                // Collect billing details from the user input
+                addressLines: [
+                    document.getElementById('addressLine1').value,
+                ],
+                familyName: document.getElementById('familyName').value,
+                givenName: document.getElementById('givenName').value,
+                email: document.getElementById('email').value,
+                countryCode: document.getElementById('countryCode').value,
+                phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+            },
+        };
+
+        const verificationResults = await payments.verifyBuyer(
+            token,
+            verificationDetails
+        );
+        return verificationResults.token;
+    }
+
+    // PayPal payment setup function
+    async function setupPayPalPayments() {
+    if (paypalInitialized) return; // Prevent re-initialization
+
+    paypal.Buttons({
+        createSubscription: function (data, actions) {
+            // Retrieve the selected plan from radio buttons
+            const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+
+            // Send the selectedPlan to your backend for processing
+            return fetch('/get-paypal-plan-id/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for Django
+                },
+                body: JSON.stringify({
+                    'selected_plan': selectedPlan
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.plan_id) {
+                    // Create the PayPal subscription with the returned plan_id
+                    return actions.subscription.create({
+                        plan_id: data.plan_id,  // Use the plan ID returned from the server
+                    });
+                } else {
+                    console.error('Plan ID not returned from server');
+                }
+            });
+        },
+
+        onApprove: function (data, actions) {
+            // Get the subscription ID from the onApprove event
+            const subscriptionId = data.subscriptionID;
+
+            if (subscriptionId) {
+                // Redirect the user to approve the subscription
+                return fetch(`/complete-paypal-subscription/?subscription_id=${subscriptionId}`, {
+                    method: 'GET',
+                })
+                .then((response) => response.json())
+                .then((result) => {
+                    if (result.success) {
+                        // Redirect to success page or show a success message
+                        window.location.href = '/success/';
+                    } else {
+                        alert('Subscription failed: ' + result.error);
+                    }
+                })
+                .catch((err) => {
+                    console.error('Subscription error:', err);
+                    alert('An error occurred during subscription processing.');
+                });
+            } else {
+                alert('Subscription ID not found.');
+            }
+        },
+
+        onError: function (err) {
+            console.error('PayPal error:', err);
+            alert('An error occurred during PayPal payment: ' + err.message);
+        }
+    }).render('#paypal-button-container');  // Render PayPal buttons
+    paypalInitialized = true;  // Set initialized flag
+}
+
+
+const statusDiv = document.getElementById("subscription-status");
+if (statusDiv) {
+    statusDiv.innerHTML = "Your subscription is being processed. You will be notified once it's activated.";
+    statusDiv.style.display = "block";  // Make sure the div is visible
+} else {
+    console.error('Subscription status element not found');
+}
+
+
+// Function to set the selected plan in the session via AJAX
+async function setSelectedPlan(plan) {
+    try {
+        const response = await fetch('/set-selected-plan/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),  // Ensure CSRF token is being passed
+            },
+            body: JSON.stringify({ plan: plan })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            console.log('Plan set successfully');
+        } else {
+            alert('Failed to set plan: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error setting plan:', error);
+        alert('Error setting plan in session.');
+    }
+}
+
+// Event listener for plan selection
+
+        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+            planInput.addEventListener('change', function() {
+                setSelectedPlanInSession(this.value);  
+            });
+        });
+
+// Helper function to get CSRF token from cookies (Django uses CSRF tokens for POST requests)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+    // Event listeners for payment method buttons
+    cardBtn.addEventListener('click', function () {
+        cardPaymentSection.style.display = 'block';
+        paypalPaymentSection.style.display = 'none';
+        setupSquarePayments(); // Initialize Square payment setup
+    });
+
+    paypalBtn.addEventListener('click', function () {
+        paypalPaymentSection.style.display = 'block';
+        cardPaymentSection.style.display = 'none';
+        setupPayPalPayments(); // Initialize PayPal payment setup
+    });
+
+    // Event listener to close the modal
+    function closeModal() {
+        document.getElementById('checkout-modal').style.display = 'none';
+    }
+
+    // Event listener for close button
+    document.getElementById('close-modal').onclick = closeModal;
+
+    // Optional: close the modal when clicking outside of it
+    window.onclick = function(event) {
+        const modal = document.getElementById('checkout-modal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const planInputs = document.querySelectorAll('input[name="plan"]');
+    const selectedPlanPrice = document.getElementById('selected-plan-price');
+    const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
+
+    // Function to update the price in the modal
+    function updateSelectedPlanPrice() {
+        const selectedPlan = document.querySelector('input[name="plan"]:checked');
+        let price;
+
+        if (selectedPlan.value === '1-week') {
+            price = '12.87';  // 1-week plan
+        } else if (selectedPlan.value === '4-week') {
+            price = '37.95';  // 4-week plan
+        } else if (selectedPlan.value === '12-week') {
+            price = '97.00';  // 12-week plan
+        } else if (selectedPlan.value === 'lifetime') {
+            price = '297.00';  // Lifetime plan
+        }
+
+        selectedPlanPrice.textContent = `$${price}`;
+        selectedPlanRenewalPrice.textContent = `$${price}`;
+    }
+
+    // Call update function when the page loads to set the initial price
+    updateSelectedPlanPrice();
+
+    // Add event listener to update the price whenever a plan is selected
+    planInputs.forEach(plan => {
+        plan.addEventListener('change', updateSelectedPlanPrice);
+    });
+});
+
+// Initialize the timer duration (10 minutes)
+let duration = 10 * 60; // 10 minutes in seconds
+
+// Select the minutes and seconds elements
+const minutesElement = document.getElementById('minutes');
+const secondsElement = document.getElementById('seconds');
+
+// Function to start the countdown
+function startCountdown() {
+    const countdownInterval = setInterval(() => {
+        // Calculate minutes and seconds
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+
+        // Update the HTML with the current minutes and seconds
+        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
+        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
+
+        // Check if the timer has finished
+        if (duration <= 0) {
+            clearInterval(countdownInterval); // Stop the timer
+            // You can trigger any action you want when the timer ends here
+            alert('Countdown finished!');
+        } else {
+            duration--; // Decrease the duration by 1 second
+        }
+    }, 1000); // Run the function every 1000 milliseconds (1 second)
+}
+
+// Start the countdown when the page loads
+window.onload = startCountdown;
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Scroll to plan selection section when "Choose a Plan" is clicked
+    const choosePlanButton = document.querySelector('.choose-plan-btn');
+    if (choosePlanButton) {
+        choosePlanButton.addEventListener('click', function () {
+            const planSelectionSection = document.getElementById('plan-selection-section');
+            if (planSelectionSection) {
+                planSelectionSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+});
+
+
+ </script>
 {% endblock %}
