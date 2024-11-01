@@ -807,6 +807,9 @@
     cardPaymentSection.style.display = 'none';
     paypalPaymentSection.style.display = 'none';
 
+    if (cardPaymentSection) cardPaymentSection.style.display = 'none';
+    if (paypalPaymentSection) paypalPaymentSection.style.display = 'none';
+
     // Show modal when "GET MY PLAN" buttons are clicked
     getPlanButtons.forEach(function (button) {
         button.addEventListener('click', function () {
@@ -1105,8 +1108,7 @@ function getCookie(name) {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            if (cookie.startsWith(`${name}=`)) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -1114,6 +1116,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 
     // Event listeners for payment method buttons
     cardBtn.addEventListener('click', function () {
@@ -1197,6 +1200,17 @@ document.addEventListener('click', function(event) {
         closeModal();
     }
 });
+
+function openModal() {
+    document.getElementById('checkout-modal').style.display = 'block';
+}
+
+if (closeBtn) {
+    closeBtn.onclick = closeModal;
+} else {
+    console.warn('Close button not found');
+}
+
 
 
  </script>
