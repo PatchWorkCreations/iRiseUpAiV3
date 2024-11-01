@@ -651,38 +651,37 @@
 </div>
 
 <div id="plan-selection-section" class="pricing-container">
-    <!-- 1-Week Plan -->
+    <!-- 1-Month Plan -->
     <div class="pricing-card">
-        <label for="1-week-plan">
-            <h3>1-WEEK PLAN</h3>
-            <div class="price">$12.87</div>
-            <p>$1.84 per day</p>
-            <input type="radio" id="1-week-plan" name="plan" value="1-week" class="card-radio">
-            <!-- Button is now part of the label -->
-           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        <label for="1-month-plan">
+            <h3>1-MONTH PLAN</h3>
+            <div class="price">$18.79</div>
+            <p>Approx. $0.63 per day</p>
+            <input type="radio" id="1-month-plan" name="plan" value="1-month" class="card-radio">
+            <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
         </label>
     </div>
 
-    <!-- 4-Week Plan (Most Popular) -->
+    <!-- Quarterly Plan (Most Popular) -->
     <div class="pricing-card highlight">
-        <label for="4-week-plan">
+        <label for="quarterly-plan">
             <div class="most-popular">👍 MOST POPULAR</div>
-            <h3>4-WEEK PLAN</h3>
-            <div class="price">$37.95</div>
-            <p>$1.36 per day</p>
-            <input type="radio" id="4-week-plan" name="plan" value="4-week" checked class="card-radio">
-           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+            <h3>QUARTERLY PLAN</h3>
+            <div class="price">$50.69</div> <!-- 10% discount on three months at $18.79 each -->
+            <p>Approx. $0.56 per day</p>
+            <input type="radio" id="quarterly-plan" name="plan" value="quarterly" checked class="card-radio">
+            <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
         </label>
     </div>
 
-    <!-- 12-Week Plan -->
+    <!-- Yearly Plan -->
     <div class="pricing-card">
-        <label for="12-week-plan">
-            <h3>12-WEEK PLAN</h3>
-            <div class="price">$97.00</div>
-            <p>$1.15 per day</p>
-            <input type="radio" id="12-week-plan" name="plan" value="12-week" class="card-radio">
-           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+        <label for="yearly-plan">
+            <h3>YEARLY PLAN</h3>
+            <div class="price">$180.98</div> <!-- 20% discount on twelve months at $18.79 each -->
+            <p>Approx. $0.50 per day</p>
+            <input type="radio" id="yearly-plan" name="plan" value="yearly" class="card-radio">
+            <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
         </label>
     </div>
 
@@ -693,49 +692,11 @@
             <p class="lifetime-plan-description">One-time payment for unlimited access</p>
             <div class="price">$297.00</div>
             <input type="radio" id="lifetime-plan" name="plan" value="lifetime" class="card-radio">
-           <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
+            <span class="card-button get-plan-btn" onclick="openModal()">Select Plan</span>
         </label>
     </div>
 </div>
 
-
-
-<div id="services" class="services section-bottom-only">
-    <div class="section-title">
-        <h5 class="title-top">Our Promise To You</h5>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-12">
-                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <div class="serv-icon">
-                        <i class="icon ion-ios-shield"></i>
-                    </div>
-                    <h5>14-Day Money-Back Guarantee</h5>
-                    <p>No questions asked—if you’re not satisfied, we’ve got you covered with a risk-free guarantee.</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12">
-                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <div class="serv-icon">
-                        <i class="icon ion-ios-headset"></i>
-                    </div>
-                    <h5>24/7 Customer Support</h5>
-                    <p>Our support team is always here, praised for being both friendly and helpful—just a message away.</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12">
-                <div class="content" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <div class="serv-icon">
-                        <i class="icon ion-ios-timer"></i>
-                    </div>
-                    <h5>Instant Delivery</h5>
-                    <p>Your bots are ready to start within 3 minutes of your purchase—instant access to your AI workforce.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="checkout-modal" class="modal" style="display:none;">
 <div class="modal-content">
@@ -744,6 +705,12 @@
 <h2>Checkout</h2>
 </div>
 <h3><span style="color: #5860F8;">91% of users </span>are satisfied with the plan and stay with us after its completion</h3>
+
+<div class="form-group">
+    <label for="discountCode">Discount Code</label>
+    <input type="text" id="discountCode" name="discountCode" placeholder="Enter discount code" class="form-control">
+    <button type="button" id="applyDiscount" class="btn-submit" style="margin-top: 10px;">Apply Discount</button>
+</div>
 
 <div id="payment-selection">
 <button id="card-button" class="payment-selection-btn">Pay with Card</button>
@@ -847,6 +814,24 @@
         });
     });
 
+    document.getElementById('applyDiscount').addEventListener('click', function() {
+    const discountCode = document.getElementById('discountCode').value;
+    let discountedAmount;
+
+    if (discountCode === 'TESTDISCOUNT') {
+        discountedAmount = 100; // Set to $1 (100 cents)
+    } else {
+        alert('Invalid discount code for testing');
+        return;
+    }
+
+    // Update the displayed price to show the discounted amount
+    document.getElementById('selected-plan-price').textContent = `$${(discountedAmount / 100).toFixed(2)}`;
+    document.getElementById('selected-plan-renewal-price').textContent = `$${(discountedAmount / 100).toFixed(2)}`;
+
+    alert(`Discount applied! New price for testing: $${(discountedAmount / 100).toFixed(2)}`);
+});
+
     // Square payment setup function
     async function setupSquarePayments() {
         if (squareInitialized) return; // Prevent re-initialization
@@ -920,12 +905,18 @@ function handlePaymentError(error) {
 
     // Function to determine the amount based on the selected plan
     function determineAmountBasedOnPlan(plan) {
-    if (plan === '1-week') {
-        return 1287;  // $12.87 in cents
-    } else if (plan === '4-week') {
-        return 3795;  // $37.95 in cents
-    } else if (plan === '12-week') {
-        return 9700;  // $97.00 in cents
+    const oneMonthPrice = 1879;  // $18.79 in cents
+
+    if (plan === '1-month') {
+        return oneMonthPrice;
+    } else if (plan === 'quarterly') {
+        const quarterlyPrice = oneMonthPrice * 3; // Price for 3 months
+        const quarterlyDiscount = 0.10; // 10% discount
+        return Math.round(quarterlyPrice * (1 - quarterlyDiscount));
+    } else if (plan === 'yearly') {
+        const yearlyPrice = oneMonthPrice * 12; // Price for 12 months
+        const yearlyDiscount = 0.20; // 20% discount
+        return Math.round(yearlyPrice * (1 - yearlyDiscount));
     } else if (plan === 'lifetime') {
         return 29700;  // $297.00 in cents
     } else {
@@ -1187,37 +1178,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Initialize the timer duration (10 minutes)
-let duration = 10 * 60; // 10 minutes in seconds
-
-// Select the minutes and seconds elements
-const minutesElement = document.getElementById('minutes');
-const secondsElement = document.getElementById('seconds');
-
-// Function to start the countdown
-function startCountdown() {
-    const countdownInterval = setInterval(() => {
-        // Calculate minutes and seconds
-        const minutes = Math.floor(duration / 60);
-        const seconds = duration % 60;
-
-        // Update the HTML with the current minutes and seconds
-        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
-        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
-
-        // Check if the timer has finished
-        if (duration <= 0) {
-            clearInterval(countdownInterval); // Stop the timer
-            // You can trigger any action you want when the timer ends here
-            alert('Countdown finished!');
-        } else {
-            duration--; // Decrease the duration by 1 second
-        }
-    }, 1000); // Run the function every 1000 milliseconds (1 second)
-}
-
-// Start the countdown when the page loads
-window.onload = startCountdown;
 
 document.addEventListener('DOMContentLoaded', function () {
     // Scroll to plan selection section when "Choose a Plan" is clicked
@@ -1229,6 +1189,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 planSelectionSection.scrollIntoView({ behavior: 'smooth' });
             }
         });
+    }
+});
+
+document.addEventListener('click', function(event) {
+    if (event.target.id === 'close-modal') {
+        closeModal();
     }
 });
 

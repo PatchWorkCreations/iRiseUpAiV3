@@ -61,6 +61,7 @@ def process_payment(request):
         selected_plan = data.get('plan')
         verification_token = data.get('verification_token')
         user_email = request.session.get('email')
+        discount_code = data.get('discount_code') 
 
         # Enhanced validation checks
         if not user_email:
@@ -70,6 +71,10 @@ def process_payment(request):
 
         # Determine the amount from selected plan
         amount = determine_amount_based_on_plan(selected_plan)
+        
+        if discount_code == 'TESTDISCOUNT':
+            amount = 100  # Set amount to $1 for testing
+
         if amount <= 0:
             return JsonResponse({"error": "Invalid or unsupported plan selected."}, status=400)
 
@@ -188,3 +193,135 @@ def save_square_customer_info(user, customer_id, card_id):
         user=user,
         defaults={'customer_id': customer_id, 'card_id': card_id}
     )
+
+
+from django.core.mail import EmailMultiAlternatives
+
+def send_welcomepassword_email(user_email, random_password):
+    """
+    Sends a personalized welcome email with HTML design to new users.
+    """
+    subject = 'Welcome to iRiseUp.Ai – Your Account is Ready!'
+    from_email = 'hello@iriseupacademy.com'
+    to_email = [user_email]
+
+    # Plain text content for fallback
+    text_content = (
+        f"Dear {user_email},\n\n"
+        "Welcome to iRiseUp.Ai! Your account has been successfully created.\n"
+        f"Here is your temporary password: {random_password}\n\n"
+        "Please log in to update your password and start your learning journey.\n\n"
+        "Best regards,\n"
+        "The iRiseUp.Ai Team"
+    )
+
+    # HTML content (you can use your email design)
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to iRiseUp.Ai</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }}
+            .container {{
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }}
+            .header {{
+                background-color: #5860F8;
+                color: #ffffff;
+                padding: 20px;
+                text-align: center;
+            }}
+            .header img {{
+                max-width: 120px;
+                margin-bottom: 10px;
+            }}
+            .header h1 {{
+                margin: 0;
+                font-size: 28px;
+                font-weight: bold;
+            }}
+            .content {{
+                padding: 30px 20px;
+                text-align: left;
+                background-color: #ffffff;
+            }}
+            .content p {{
+                font-size: 16px;
+                margin-bottom: 20px;
+            }}
+            .button {{
+                display: inline-block;
+                padding: 12px 25px;
+                color: #ffffff;
+                background-color: #5860F8;
+                text-decoration: none;
+                border-radius: 5px;
+                font-size: 16px;
+                margin-top: 20px;
+            }}
+            .button:hover {{
+                background-color: #4752c4;
+            }}
+            .footer {{
+                text-align: center;
+                padding: 20px;
+                background-color: #f4f4f4;
+                color: #888;
+                font-size: 12px;
+            }}
+            .footer p {{
+                margin: 0;
+            }}
+            .footer a {{
+                color: #5860F8;
+                text-decoration: none;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Email Header -->
+            <div class="header">
+                <img src="https://www.iriseupacademy.com/static/myapp/images/resource/author-6.png" alt="iRiseUp.Ai Logo">
+                <h1>Welcome to iRiseUp.Ai, {user_email}!</h1>
+            </div>
+
+            <!-- Email Content -->
+            <div class="content">
+                <p>Hello {user_email},</p>
+                <p>Your account has been successfully created. Below is your temporary password:</p>
+                <p><strong>Temporary Password:</strong> {random_password}</p>
+                <p>Please log in and update your password for security.</p>
+                <a href="https://www.iriseupacademy.com/sign_in" class="button">Log In Now</a>
+                <p>Best regards,<br><strong>The iRiseUp.Ai Team</strong></p>
+            </div>
+
+            <!-- Email Footer -->
+            <div class="footer">
+                <p>iRiseUp.Ai, Columbus, Ohio, USA | <a href="https://iriseupacademy.com/unsubscribe">Unsubscribe</a></p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    # Create the email message with plain text and HTML alternatives
+    email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
