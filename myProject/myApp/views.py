@@ -62,39 +62,52 @@ def contact(request):
         return redirect(reverse('index'))
     return render(request, 'index.html')
 
-# Square Payment Processing
+# Initialize logger and Square client
+logger = logging.getLogger(__name__)
+square_client = Client(
+    access_token=settings.SQUARE_ACCESS_TOKEN,
+    environment='production'  # Ensure this is set to 'production' for live payments
+)
+
+# Payment Processing Endpoint
 @csrf_exempt
 def process_payment(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
 
     try:
+        # Parse and validate request data
         data = json.loads(request.body)
         card_token = data.get('source_id')
         selected_plan = data.get('plan')
         user_email = request.session.get('email')
-        discount_code = data.get('discount_code') 
+        discount_code = data.get('discount_code')
 
         if not user_email or not card_token or not selected_plan:
             return JsonResponse({"error": "Missing required details."}, status=400)
 
+        # Determine payment amount
         amount = determine_amount_based_on_plan(selected_plan)
         if discount_code == 'TESTDISCOUNT':
-            amount = 100
+            amount = 100  # Apply discount
 
+        # Retrieve or create Square customer
         customer_id = get_or_create_square_customer(data, user_email)
         if not customer_id:
             return JsonResponse({"error": "Failed to retrieve customer profile."}, status=400)
 
+        # Process payment
         payment_result = process_square_payment(card_token, amount, customer_id)
         if payment_result.get("error"):
             return JsonResponse({"error": payment_result["error"]}, status=400)
 
+        # Manage user access and transaction
         user = get_or_create_user(user_email, data)
         expiration_date, next_billing_date = get_billing_dates(selected_plan)
         store_user_course_access(user, selected_plan, expiration_date)
         save_square_customer_info(user, customer_id, payment_result["card_id"])
 
+        # Record transaction
         Transaction.objects.create(
             user=user,
             amount=amount,
@@ -107,7 +120,7 @@ def process_payment(request):
         return JsonResponse({"success": True})
 
     except Exception as e:
-        logger.error("Unexpected error: %s", str(e), exc_info=True)
+        logger.error("Unexpected error during payment processing: %s", str(e), exc_info=True)
         return JsonResponse({"error": "An unexpected error occurred."}, status=500)
 
 # Helper Functions
@@ -118,12 +131,18 @@ def determine_amount_based_on_plan(plan):
 def get_or_create_square_customer(data, email):
     try:
         result = square_client.customers.create_customer(
-            body={"given_name": data.get('givenName'), "family_name": data.get('familyName'), "email_address": email}
+            body={
+                "given_name": data.get('givenName'),
+                "family_name": data.get('familyName'),
+                "email_address": email
+            }
         )
         if result.is_success():
             return result.body['customer']['id']
+        else:
+            logger.error("Square API error (create_customer): %s", result.errors)
     except Exception as e:
-        logger.error("Error creating customer: %s", e)
+        logger.error("Error creating Square customer: %s", e)
     return None
 
 def process_square_payment(card_token, amount, customer_id):
@@ -138,9 +157,13 @@ def process_square_payment(card_token, amount, customer_id):
         )
         if result.is_success():
             return {"card_id": result.body['payment']['card_details']['card']['id']}
+        else:
+            # Log Square errors if payment fails
+            logger.error("Square Payment API error: %s", result.errors)
+            return {"error": "Payment failed. Please verify your payment details and try again."}
     except Exception as e:
-        logger.error("Payment error: %s", e)
-    return {"error": "Payment failed. Please try again."}
+        logger.error("Payment processing error: %s", e, exc_info=True)
+    return {"error": "An unexpected error occurred during payment processing."}
 
 def get_or_create_user(email, data):
     user, created = User.objects.get_or_create(username=email, defaults={'email': email})
@@ -157,10 +180,14 @@ def get_billing_dates(plan):
     return expiration_date, expiration_date
 
 def store_user_course_access(user, plan, expiration_date):
-    UserAccess.objects.update_or_create(user=user, defaults={'expiration_date': expiration_date, 'selected_plan': plan})
+    UserAccess.objects.update_or_create(
+        user=user, defaults={'expiration_date': expiration_date, 'selected_plan': plan}
+    )
 
 def save_square_customer_info(user, customer_id, card_id):
-    SquareCustomer.objects.update_or_create(user=user, defaults={'customer_id': customer_id, 'card_id': card_id})
+    SquareCustomer.objects.update_or_create(
+        user=user, defaults={'customer_id': customer_id, 'card_id': card_id}
+    )
 
 def send_welcome_password_email(user_email, random_password):
     subject = 'Welcome to iRiseUp.Ai – Your Account is Ready!'
