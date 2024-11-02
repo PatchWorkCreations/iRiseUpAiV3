@@ -1,7 +1,5 @@
 {% extends 'myApp/base.html' %}
 {% load static %}
-
-{% block content %}
 <head>
     <script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>
 
@@ -12,8 +10,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
 </head>
+{% block content %}
 <style>
-    /* Container */
+/* Container */
 .pricing-container {
     display: flex;
     flex-wrap: wrap;
@@ -30,29 +29,15 @@
     width: 250px;
     padding: 20px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     display: flex;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.pricing-card h3 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.pricing-card .price {
-    font-size: 32px;
-    font-weight: bold;
-    color: #111;
-    margin-bottom: 10px;
-}
-
-.pricing-card p {
-    font-size: 16px;
-    color: #666;
-}
+.pricing-card h3 { font-size: 24px; color: #333; margin-bottom: 10px; }
+.pricing-card .price { font-size: 32px; font-weight: bold; color: #111; margin-bottom: 10px; }
+.pricing-card p { font-size: 16px; color: #666; }
+.pricing-card:hover { transform: scale(1.03); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
 
 /* Discount Badge */
 .discount-badge {
@@ -77,31 +62,21 @@
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: auto; /* Pushes the button to the bottom */
+    margin-top: auto;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
+.card-button:hover { background-color: #555; }
+.card-radio { display: none; }
 
-.card-button:hover {
-    background-color: #555;
-}
-
-.card-radio {
-    display: none; /* Hides the radio button */
-}
-
-
-/* Highlighted Yearly Plan */
+/* Highlighted Plan */
 .pricing-card.highlight {
     border: 2px solid #ff9800;
     background-color: #fffaf0;
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-
-.pricing-card.highlight .price {
-    color: #ff9800;
-}
-
+.pricing-card.highlight .price { color: #ff9800; }
 .most-popular {
     position: absolute;
     top: -10px;
@@ -115,12 +90,6 @@
     text-transform: uppercase;
 }
 
-/* Hover Effect */
-.pricing-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
 /* Header Banner */
 .header-banner {
     background-color: #333;
@@ -131,60 +100,68 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 20px 0;
 }
+.header-banner h1 { font-size: 36px; font-weight: bold; margin: 0; color: #ff9800; }
+.header-banner p { font-size: 18px; margin-top: 10px; color: #f7f7f7; }
 
-.header-banner h1 {
-    font-size: 36px;
-    font-weight: bold;
-    margin: 0;
-    color: #ff9800; /* Gold color for emphasis */
-}
-
-.header-banner p {
-    font-size: 18px;
-    margin-top: 10px;
-    color: #f7f7f7;
-}
-
+/* Modal Styles */
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
-    z-index: 1000; /* Ensure it appears above other content */
-    left: 0;
+    z-index: 1000;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    background-color: rgba(0, 0, 0, 0.4);
 }
-
 .modal-content {
     background-color: #fff;
-    margin: 10% auto; /* 10% from the top and centered */
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Width of the modal */
+    border-radius: 10px;
+    width: 90%;
     max-width: 500px;
-    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
+.modal-content h3 {
+    padding-top: 8px;
+    font-size: 20px;
+    text-align: center;
+}
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.modal-header h2 { margin: 0; font-size: 1.2rem; color: #333; }
+.modal-header .close {
+    position: absolute;
+    left: 15px;
+    font-size: 1.5rem;
     font-weight: bold;
-}
-
-.close:hover, .close:focus {
-    color: black;
+    color: #aaa;
     cursor: pointer;
+    background-color: #f3f4f6;
+    padding: 10px 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
+.modal-header .close:hover { color: black; }
 
-
-.plan-info p, .subscription-info p {
-    font-size: 16px;
+/* Modal Body */
+.modal-body {
+    padding: 15px;
+    font-size: 1rem;
     color: #333;
+    line-height: 1.5;
 }
+.modal-body h2 { font-size: 1.25rem; font-weight: bold; color: #333; margin-bottom: 10px; }
+.modal-body h2 .highlight { color: #5860F8; }
 
+/* Buttons */
 .payment-selection-btn, .btn-submit {
     background-color: #5860F8;
     color: white;
@@ -193,205 +170,39 @@
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    margin: 10px auto; /* Centers the button */
-    width: 100%; /* Makes the button full-width */
-    max-width: 300px; /* Optional: limits the width to avoid being too wide */
-    transition: background-color 0.3s;
-    display: block; /* Ensures the button spans across */
-    text-align: center;
-}
-
-
-.payment-selection-btn:hover, .btn-submit:hover {
-    background-color: #434ad8;
-}
-
-.card-icons img {
-    width: 40px;
-    margin: 5px;
-}
-
-.subscription-terms p {
-    font-size: 12px;
-    color: #666;
-}
-
-.serv-icon i {
-    font-size: 48px;
-    color: #5860F8;
-    margin-bottom: 10px;
-}
-
-#checkout-modal .form-group label {
-    font-weight: bold;
-    color: #333;
-}
-
-#checkout-modal .form-group input {
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.safe-icon {
-    width: 20px;
-    margin-right: 5px;
-}
-
-#checkout-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+    max-width: 300px;
+    margin: 10px auto;
+    transition: background-color 0.3s;
+    display: block;
 }
+.payment-selection-btn:hover, .btn-submit:hover { background-color: #434ad8; }
 
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 600px;
-    margin: auto;
-}
-
-
-.pay-safe {
-    text-align: center;
-    align-items: center;
-    background-color: #f4fdf4; /* Light green background color */
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #74b948; /* Green color for text */
-    margin-top: 10px; /* Space above the section */
-}
-
-.pay-safe .safe-icon {
-    width: 20px; /* Adjust the icon size as needed */
-    height: 20px;
-    margin-right: 8px; /* Space between the icon and the text */
-}
-
-
+/* Additional Elements */
 .card-icons {
     display: flex;
-    justify-content: space-between; /* Space out the icons evenly */
-    align-items: center; /* Align them vertically centered */
-    flex-wrap: wrap; /* Allow wrapping if needed on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
+.card-icons img { width: 40px; margin: 5px; }
+.subscription-terms p { font-size: 12px; color: #666; }
+.serv-icon i { font-size: 48px; color: #5860F8; margin-bottom: 10px; }
+.safe-icon { width: 20px; margin-right: 5px; }
 
-.card-icons img {
-    width: 40px; /* Adjust the width as needed */
-    margin: 5px; /* Adjust the spacing between images */
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-.modal-content {
-    background-color: #fff;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px; /* Adjust modal width as needed */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.modal-content h3{
-    padding-top: 8px;
-    font-size: 20px;
-    text-align: center;
-}
-
-
-/* Header styles */
-.modal-header {
-
+/* Payment Security */
+.pay-safe {
     display: flex;
-    justify-content: center; 
-    align-items: center; /* Align items vertically */
-    position: relative; /* Position elements within the header */
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #333;
-}
-
-
-.modal-header .close {
+    align-items: center;
+    background-color: #f4fdf4;
     padding: 10px 15px;
-    background-color: #f3f4f6;
-    position: absolute;
-    left: 15px; /* Adjust the position of the close button to the left */
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #aaa;
-    cursor: pointer;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #74b948;
+    margin-top: 10px;
 }
+.pay-safe .safe-icon { width: 20px; height: 20px; margin-right: 8px; }
 
-.modal-header .close:hover {
-    color: black;
-}
-
-
-/* Body styles */
-.modal-body {
-    padding: 15px;
-    font-size: 1rem;
-    color: #333;
-    line-height: 1.5;
-}
-
-.modal-body h2 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.modal-body h2 .highlight {
-    color: #5860F8; /* Purple color */
-}
-
-.btn-submit {
-    background-color: #5860F8;
-    color: white;
-    font-size: 1rem;
-    padding: 12px;
-    border-radius: 5px;
-    border: none;
-    width: 100%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-    font-weight: bold;
-}
-
-.btn-submit:hover {
-    background-color: #3c4ab8;
-}
 
 </style>
 <!-- Home Intro -->
@@ -425,7 +236,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-6 col-xs-12">
                 <div class="content-image">
-                    <img src="{% static 'assets/images/about-img.png' %}" alt="About Image">
+                    <img src="#" alt="About Image">
                 </div>
             </div>
             <div class="col-sm-12 col-md-6 col-xs-12">
@@ -714,7 +525,6 @@
 
 <div id="payment-selection">
 <button id="card-button" class="payment-selection-btn">Pay with Card</button>
-<!--       <button id="paypal-button" class="payment-selection-btn">Pay with PayPal</button> --> 
 </div>
 
 <div id="card-payment" class="payment-option" style="display:none;">
@@ -776,441 +586,151 @@
 </div>
 
 
-<div id="paypal-payment" class="payment-option" style="display:none;">
-<h3 style="text-align: center;">Pay with PayPal</h3>
-<div id="paypal-button-container"></div> <!-- PayPal button container -->
-<div id="subscription-status" style="display: none; color: green; text-align: center; margin-top: 15px;"></div>
-</div>
+
 
 <!-- Add the subscription terms language below the payment options -->
 <div class="subscription-terms mt-4">
-<p style="text-align: center; font-size: 12px;">You agree that <strong id="selected-plan-price">$39.99</strong> will be as an intro offer, then <strong id="selected-plan-renewal-price">$39.99</strong> will be automatically billed every 4-weeks until you cancel in settings. <a href="#">Subscription Terms</a>.</p>
+    <p style="text-align: center; font-size: 12px;">
+        You agree that <strong id="selected-plan-price">$39.99</strong> will be charged as an introductory offer, 
+        then <strong id="selected-plan-renewal-price">$39.99</strong> will be automatically billed every 4 weeks until you cancel in settings. 
+        <a href="#">Subscription Terms</a>.
+    </p>
 </div>
+
 
 </div>
 </div>
 
 <!-- End Contact Section -->
  <script>
-    document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('checkout-modal');
     const getPlanButtons = document.querySelectorAll('.get-plan-btn');
-    const closeBtn = document.getElementsByClassName('close')[0];
+    const closeBtn = document.getElementById('close-modal');
     const cardBtn = document.getElementById('card-button');
-    const paypalBtn = document.getElementById('paypal-button');
     const cardPaymentSection = document.getElementById('card-payment');
-    const paypalPaymentSection = document.getElementById('paypal-payment');
+    const selectedPlanPrice = document.getElementById('selected-plan-price');
+    const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
     let squareInitialized = false;
-    let paypalInitialized = false;
 
-    // Initialize payment options visibility
-    cardPaymentSection.style.display = 'none';
-    paypalPaymentSection.style.display = 'none';
+    // Open Modal
+    getPlanButtons.forEach(button => button.addEventListener('click', openModal));
 
-    if (cardPaymentSection) cardPaymentSection.style.display = 'none';
-    if (paypalPaymentSection) paypalPaymentSection.style.display = 'none';
-
-    // Show modal when "GET MY PLAN" buttons are clicked
-    getPlanButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            modal.style.display = 'block';
-        });
-    });
-
-    document.getElementById('applyDiscount').addEventListener('click', function() {
-    const discountCode = document.getElementById('discountCode').value;
-    let discountedAmount;
-
-    if (discountCode === 'TESTDISCOUNT') {
-        discountedAmount = 100; // Set to $1 (100 cents)
-    } else {
-        alert('Invalid discount code for testing');
-        return;
+    function openModal() {
+        modal.style.display = 'block';
     }
 
-    // Update the displayed price to show the discounted amount
-    document.getElementById('selected-plan-price').textContent = `$${(discountedAmount / 100).toFixed(2)}`;
-    document.getElementById('selected-plan-renewal-price').textContent = `$${(discountedAmount / 100).toFixed(2)}`;
+    // Close Modal
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => { if (event.target === modal) modal.style.display = 'none'; };
 
-    alert(`Discount applied! New price for testing: $${(discountedAmount / 100).toFixed(2)}`);
-});
+    // Apply Discount
+    document.getElementById('applyDiscount').addEventListener('click', () => {
+        const discountCode = document.getElementById('discountCode').value;
+        const discountedAmount = discountCode === 'TESTDISCOUNT' ? 100 : null;
+        if (discountedAmount) {
+            updateDisplayedPrice(discountedAmount);
+            alert(`Discount applied! New price: $${(discountedAmount / 100).toFixed(2)}`);
+        } else {
+            alert('Invalid discount code');
+        }
+    });
 
-    // Square payment setup function
+    function updateDisplayedPrice(amount) {
+        selectedPlanPrice.textContent = `$${(amount / 100).toFixed(2)}`;
+        selectedPlanRenewalPrice.textContent = `$${(amount / 100).toFixed(2)}`;
+    }
+
+    // Square Payment Setup
+    cardBtn.addEventListener('click', () => {
+        cardPaymentSection.style.display = 'block';
+        setupSquarePayments();
+    });
+
     async function setupSquarePayments() {
-        if (squareInitialized) return; // Prevent re-initialization
+        if (squareInitialized) return;
         const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
         const card = await payments.card();
         await card.attach('#card-container');
 
-        const payButton = document.getElementById('payment-form').querySelector('button[type="submit"]');
-        payButton.addEventListener('click', async function (event) {
+        document.getElementById('payment-form').addEventListener('submit', async (event) => {
             event.preventDefault();
-            try {
-                const result = await card.tokenize();
-                if (result.status === 'OK') {
-                    // Get selected plan and determine the amount
-                    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
-                    const amount = determineAmountBasedOnPlan(selectedPlan);
-
-                    // New: Verify the buyer using SCA with CHARGE_AND_STORE intent
-                    const verificationToken = await verifyBuyer(payments, result.token, amount);
-
-                    // Send the payment request with the verification token
-                    const response = await fetch('/process-payment/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        body: JSON.stringify({
-                            source_id: result.token,
-                            plan: selectedPlan,
-                            amount: amount,
-                            verification_token: verificationToken  // New: Include verification token
-                        }),
-                    });
-
-                    const jsonResult = await response.json();
-
-                if (jsonResult.success) {
-                    window.location.href = '/success/';
-                } else {
-                    handlePaymentError(jsonResult.error);  // Handle errors in a friendly way
-                }
-            } else {
-                alert('Tokenization failed: ' + result.errors[0].message);
-            }
-        } catch (e) {
-            console.error(e.message);
-            alert('Payment failed: ' + e.message);
-        }
-    });
-    squareInitialized = true; // Set flag to prevent re-initialization
-}
-
-function handlePaymentError(error) {
-    let userMessage = 'An error occurred during payment.';
-    
-    if (error.includes('CARD_DECLINED')) {
-        userMessage = 'Your card was declined. Please try another payment method.';
-    } else if (error.includes('INSUFFICIENT_FUNDS')) {
-        userMessage = 'Insufficient funds. Please check your balance or use a different card.';
-    } else if (error.includes('EXPIRED_CARD')) {
-        userMessage = 'Your card has expired. Please use a different card.';
-    } else if (error.includes('NETWORK_ERROR')) {
-        userMessage = 'There was a network issue. Please try again later.';
-    } else if (error.includes('FRAUD_REJECTED')) {
-        userMessage = 'Your payment was rejected due to suspected fraud. Please contact your bank.';
+            const result = await card.tokenize();
+            if (result.status === 'OK') processSquarePayment(result.token);
+            else alert(`Tokenization failed: ${result.errors[0].message}`);
+        });
+        squareInitialized = true;
     }
 
-    alert(userMessage);  // Display user-friendly error message
-}
+    async function processSquarePayment(token) {
+        const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+        const amount = determineAmountBasedOnPlan(selectedPlan);
+        try {
+            const response = await fetch('/process-payment/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify({ source_id: token, plan: selectedPlan, amount })
+            });
+            const jsonResult = await response.json();
+            if (jsonResult.success) window.location.href = '/success/';
+            else alert(`Payment error: ${jsonResult.error}`);
+        } catch (error) {
+            alert('Unexpected payment error: ' + error.message);
+        }
+    }
 
-    // Function to determine the amount based on the selected plan
     function determineAmountBasedOnPlan(plan) {
-    const oneMonthPrice = 1879;  // $18.79 in cents
-
-    if (plan === '1-month') {
-        return oneMonthPrice;
-    } else if (plan === 'quarterly') {
-        const quarterlyPrice = oneMonthPrice * 3; // Price for 3 months
-        const quarterlyDiscount = 0.10; // 10% discount
-        return Math.round(quarterlyPrice * (1 - quarterlyDiscount));
-    } else if (plan === 'yearly') {
-        const yearlyPrice = oneMonthPrice * 12; // Price for 12 months
-        const yearlyDiscount = 0.20; // 20% discount
-        return Math.round(yearlyPrice * (1 - yearlyDiscount));
-    } else if (plan === 'lifetime') {
-        return 29700;  // $297.00 in cents
-    } else {
-        return 0;  // Default to 0 for unrecognized plans
+        const prices = { '1-month': 1879, 'quarterly': 16911, 'yearly': 18098, 'lifetime': 29700 };
+        return prices[plan] || 0;
     }
-}
-
-
-
-    // Function to set the selected plan in the session via AJAX
-        function setSelectedPlanInSession(plan) {
-            fetch('/set-selected-plan/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                body: JSON.stringify({ plan: plan }),
-            }).then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Plan set in session successfully');
-                } else {
-                    console.error('Failed to set plan in session');
-                }
-            });
-        }
-
-        // Event listener for plan selection
-        //document.querySelectorAll('input[name="plan"]').forEach(planInput => {
-        //    planInput.addEventListener('change', function() {
-        //        setSelectedPlanInSession(this.value);
-        //    });
-        //});
-
-        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
-            planInput.addEventListener('change', function() {
-                setSelectedPlanInSession(this.value);  
-            });
-        });
-
-
-
-    // New: Add the verifyBuyer function with the correct amount and CHARGE_AND_STORE intent
-    async function verifyBuyer(payments, token, amount) {
-        const verificationDetails = {
-            amount: (amount / 100).toFixed(2),  // Convert cents to dollars
-            currencyCode: 'USD',  // Ensure this matches the currency used in the transaction
-            intent: 'CHARGE_AND_STORE',  // Intent for charging and storing the card
-            billingContact: {
-                // Collect billing details from the user input
-                addressLines: [
-                    document.getElementById('addressLine1').value,
-                ],
-                familyName: document.getElementById('familyName').value,
-                givenName: document.getElementById('givenName').value,
-                email: document.getElementById('email').value,
-                countryCode: document.getElementById('countryCode').value,
-                phone: document.getElementById('phone').value,
-                state: document.getElementById('state').value,
-                city: document.getElementById('city').value,
-            },
-        };
-
-        const verificationResults = await payments.verifyBuyer(
-            token,
-            verificationDetails
-        );
-        return verificationResults.token;
-    }
-
-    // PayPal payment setup function
-    async function setupPayPalPayments() {
-    if (paypalInitialized) return; // Prevent re-initialization
-
-    paypal.Buttons({
-        createSubscription: function (data, actions) {
-            // Retrieve the selected plan from radio buttons
-            const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
-
-            // Send the selectedPlan to your backend for processing
-            return fetch('/get-paypal-plan-id/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for Django
-                },
-                body: JSON.stringify({
-                    'selected_plan': selectedPlan
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.plan_id) {
-                    // Create the PayPal subscription with the returned plan_id
-                    return actions.subscription.create({
-                        plan_id: data.plan_id,  // Use the plan ID returned from the server
-                    });
-                } else {
-                    console.error('Plan ID not returned from server');
-                }
-            });
-        },
-
-        onApprove: function (data, actions) {
-            // Get the subscription ID from the onApprove event
-            const subscriptionId = data.subscriptionID;
-
-            if (subscriptionId) {
-                // Redirect the user to approve the subscription
-                return fetch(`/complete-paypal-subscription/?subscription_id=${subscriptionId}`, {
-                    method: 'GET',
-                })
-                .then((response) => response.json())
-                .then((result) => {
-                    if (result.success) {
-                        // Redirect to success page or show a success message
-                        window.location.href = '/success/';
-                    } else {
-                        alert('Subscription failed: ' + result.error);
-                    }
-                })
-                .catch((err) => {
-                    console.error('Subscription error:', err);
-                    alert('An error occurred during subscription processing.');
-                });
-            } else {
-                alert('Subscription ID not found.');
-            }
-        },
-
-        onError: function (err) {
-            console.error('PayPal error:', err);
-            alert('An error occurred during PayPal payment: ' + err.message);
-        }
-    }).render('#paypal-button-container');  // Render PayPal buttons
-    paypalInitialized = true;  // Set initialized flag
-}
-
-
-const statusDiv = document.getElementById("subscription-status");
-if (statusDiv) {
-    statusDiv.innerHTML = "Your subscription is being processed. You will be notified once it's activated.";
-    statusDiv.style.display = "block";  // Make sure the div is visible
-} else {
-    console.error('Subscription status element not found');
-}
-
-
-// Function to set the selected plan in the session via AJAX
-async function setSelectedPlan(plan) {
-    try {
-        const response = await fetch('/set-selected-plan/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),  // Ensure CSRF token is being passed
-            },
-            body: JSON.stringify({ plan: plan })
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            console.log('Plan set successfully');
-        } else {
-            alert('Failed to set plan: ' + result.error);
-        }
-    } catch (error) {
-        console.error('Error setting plan:', error);
-        alert('Error setting plan in session.');
-    }
-}
-
-// Event listener for plan selection
-
-        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
-            planInput.addEventListener('change', function() {
-                setSelectedPlanInSession(this.value);  
-            });
-        });
-
-// Helper function to get CSRF token from cookies (Django uses CSRF tokens for POST requests)
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith(`${name}=`)) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-
-    // Event listeners for payment method buttons
-    cardBtn.addEventListener('click', function () {
-        cardPaymentSection.style.display = 'block';
-        paypalPaymentSection.style.display = 'none';
-        setupSquarePayments(); // Initialize Square payment setup
-    });
-
-    paypalBtn.addEventListener('click', function () {
-        paypalPaymentSection.style.display = 'block';
-        cardPaymentSection.style.display = 'none';
-        setupPayPalPayments(); // Initialize PayPal payment setup
-    });
-
-    // Event listener to close the modal
-    function closeModal() {
-        document.getElementById('checkout-modal').style.display = 'none';
-    }
-
-    // Event listener for close button
-    document.getElementById('close-modal').onclick = closeModal;
-
-    // Optional: close the modal when clicking outside of it
-    window.onclick = function(event) {
-        const modal = document.getElementById('checkout-modal');
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    };
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const planInputs = document.querySelectorAll('input[name="plan"]');
     const selectedPlanPrice = document.getElementById('selected-plan-price');
     const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
 
-    // Function to update the price in the modal
     function updateSelectedPlanPrice() {
-        const selectedPlan = document.querySelector('input[name="plan"]:checked');
-        let price;
+        const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+        let introPrice, renewalPrice;
 
-        if (selectedPlan.value === '1-week') {
-            price = '12.87';  // 1-week plan
-        } else if (selectedPlan.value === '4-week') {
-            price = '37.95';  // 4-week plan
-        } else if (selectedPlan.value === '12-week') {
-            price = '97.00';  // 12-week plan
-        } else if (selectedPlan.value === 'lifetime') {
-            price = '297.00';  // Lifetime plan
+        // Set pricing based on the selected plan
+        switch (selectedPlan) {
+            case '1-month':
+                introPrice = '18.79';
+                renewalPrice = '18.79';
+                break;
+            case 'quarterly':
+                introPrice = '50.69';
+                renewalPrice = '50.69';
+                break;
+            case 'yearly':
+                introPrice = '180.98';
+                renewalPrice = '180.98';
+                break;
+            case 'lifetime':
+                introPrice = '297.00';
+                renewalPrice = '297.00';
+                break;
+            default:
+                introPrice = '0.00';
+                renewalPrice = '0.00';
         }
 
-        selectedPlanPrice.textContent = `$${price}`;
-        selectedPlanRenewalPrice.textContent = `$${price}`;
+        // Update the displayed prices
+        selectedPlanPrice.textContent = `$${introPrice}`;
+        selectedPlanRenewalPrice.textContent = `$${renewalPrice}`;
     }
 
-    // Call update function when the page loads to set the initial price
+    // Run update function on page load to set default prices
     updateSelectedPlanPrice();
 
-    // Add event listener to update the price whenever a plan is selected
+    // Add change event listener to all plan inputs
     planInputs.forEach(plan => {
         plan.addEventListener('change', updateSelectedPlanPrice);
     });
 });
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Scroll to plan selection section when "Choose a Plan" is clicked
-    const choosePlanButton = document.querySelector('.choose-plan-btn');
-    if (choosePlanButton) {
-        choosePlanButton.addEventListener('click', function () {
-            const planSelectionSection = document.getElementById('plan-selection-section');
-            if (planSelectionSection) {
-                planSelectionSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-});
-
-document.addEventListener('click', function(event) {
-    if (event.target.id === 'close-modal') {
-        closeModal();
-    }
-});
-
-function openModal() {
-    document.getElementById('checkout-modal').style.display = 'block';
-}
-
-if (closeBtn) {
-    closeBtn.onclick = closeModal;
-} else {
-    console.warn('Close button not found');
-}
-
 
 
  </script>
