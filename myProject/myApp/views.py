@@ -70,13 +70,13 @@ square_client = Client(
 )
 
 # Payment Processing Endpoint
+# Square Payment Processing
 @csrf_exempt
 def process_payment(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
 
     try:
-        # Parse and validate request data
         data = json.loads(request.body)
         card_token = data.get('source_id')
         selected_plan = data.get('plan')
@@ -96,12 +96,13 @@ def process_payment(request):
         if not customer_id:
             return JsonResponse({"error": "Failed to retrieve customer profile."}, status=400)
 
-        # Process payment
+        # Process payment and return detailed error messages if applicable
         payment_result = process_square_payment(card_token, amount, customer_id)
         if payment_result.get("error"):
+            logger.error("Payment error details: %s", payment_result["error"])  # Log error details
             return JsonResponse({"error": payment_result["error"]}, status=400)
 
-        # Manage user access and transaction
+        # Handle successful payment and user access logic
         user = get_or_create_user(user_email, data)
         expiration_date, next_billing_date = get_billing_dates(selected_plan)
         store_user_course_access(user, selected_plan, expiration_date)
@@ -120,8 +121,9 @@ def process_payment(request):
         return JsonResponse({"success": True})
 
     except Exception as e:
+        # Log unexpected errors
         logger.error("Unexpected error during payment processing: %s", str(e), exc_info=True)
-        return JsonResponse({"error": "An unexpected error occurred."}, status=500)
+        return JsonResponse({"error": "An unexpected error occurred. Please try again later."}, status=500)
 
 # Helper Functions
 def determine_amount_based_on_plan(plan):
@@ -158,12 +160,13 @@ def process_square_payment(card_token, amount, customer_id):
         if result.is_success():
             return {"card_id": result.body['payment']['card_details']['card']['id']}
         else:
-            # Log Square errors if payment fails
-            logger.error("Square Payment API error: %s", result.errors)
-            return {"error": "Payment failed. Please verify your payment details and try again."}
+            # Capture detailed Square errors if the payment fails
+            error_messages = [error['detail'] for error in result.errors]
+            logger.error("Square Payment API error: %s", error_messages)
+            return {"error": "Payment failed: " + "; ".join(error_messages)}
     except Exception as e:
-        logger.error("Payment processing error: %s", e, exc_info=True)
-    return {"error": "An unexpected error occurred during payment processing."}
+        logger.error("Unexpected error in process_square_payment: %s", e, exc_info=True)
+        return {"error": "An unexpected error occurred while processing payment."}
 
 def get_or_create_user(email, data):
     user, created = User.objects.get_or_create(username=email, defaults={'email': email})
