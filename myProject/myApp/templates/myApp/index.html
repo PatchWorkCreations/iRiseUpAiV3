@@ -602,136 +602,143 @@
 </div>
 
 <!-- End Contact Section -->
- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('checkout-modal');
-    const getPlanButtons = document.querySelectorAll('.get-plan-btn');
-    const closeBtn = document.getElementById('close-modal');
-    const cardBtn = document.getElementById('card-button');
-    const cardPaymentSection = document.getElementById('card-payment');
-    const selectedPlanPrice = document.getElementById('selected-plan-price');
-    const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
-    let squareInitialized = false;
-
-    // Open Modal
-    getPlanButtons.forEach(button => button.addEventListener('click', openModal));
-
-    function openModal() {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Modal and payment elements
+      const modal = document.getElementById('checkout-modal');
+      const getPlanButtons = document.querySelectorAll('.get-plan-btn');
+      const closeBtn = document.getElementById('close-modal');
+      const cardBtn = document.getElementById('card-button');
+      const cardPaymentSection = document.getElementById('card-payment');
+      const selectedPlanPrice = document.getElementById('selected-plan-price');
+      const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
+      let squareInitialized = false;
+  
+      // Open and close modal functions
+      function openModal() {
         modal.style.display = 'block';
-    }
-
-    // Close Modal
-    closeBtn.onclick = () => modal.style.display = 'none';
-    window.onclick = (event) => { if (event.target === modal) modal.style.display = 'none'; };
-
-    // Apply Discount
-    document.getElementById('applyDiscount').addEventListener('click', () => {
+      }
+      function closeModal() {
+        modal.style.display = 'none';
+      }
+  
+      // Event listeners for opening and closing modal
+      getPlanButtons.forEach(button => button.addEventListener('click', openModal));
+      closeBtn.onclick = closeModal;
+      window.onclick = (event) => { if (event.target === modal) closeModal(); };
+  
+      // Apply Discount
+      document.getElementById('applyDiscount').addEventListener('click', () => {
         const discountCode = document.getElementById('discountCode').value;
         const discountedAmount = discountCode === 'TESTDISCOUNT' ? 100 : null;
         if (discountedAmount) {
-            updateDisplayedPrice(discountedAmount);
-            alert(`Discount applied! New price: $${(discountedAmount / 100).toFixed(2)}`);
+          updateDisplayedPrice(discountedAmount);
+          alert(`Discount applied! New price: $${(discountedAmount / 100).toFixed(2)}`);
         } else {
-            alert('Invalid discount code');
+          alert('Invalid discount code');
         }
-    });
-
-    function updateDisplayedPrice(amount) {
+      });
+  
+      function updateDisplayedPrice(amount) {
         selectedPlanPrice.textContent = `$${(amount / 100).toFixed(2)}`;
         selectedPlanRenewalPrice.textContent = `$${(amount / 100).toFixed(2)}`;
-    }
-
-    // Square Payment Setup
-    cardBtn.addEventListener('click', () => {
+      }
+  
+      // Setup Square payment form
+      cardBtn.addEventListener('click', () => {
         cardPaymentSection.style.display = 'block';
         setupSquarePayments();
-    });
-
-    async function setupSquarePayments() {
+      });
+  
+      async function setupSquarePayments() {
         if (squareInitialized) return;
-        const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
-        const card = await payments.card();
-        await card.attach('#card-container');
-
-        document.getElementById('payment-form').addEventListener('submit', async (event) => {
+        try {
+          const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
+          const card = await payments.card();
+          await card.attach('#card-container');
+          
+          // Form submission for Square
+          document.getElementById('payment-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             const result = await card.tokenize();
-            if (result.status === 'OK') processSquarePayment(result.token);
-            else alert(`Tokenization failed: ${result.errors[0].message}`);
-        });
-        squareInitialized = true;
-    }
-
-    async function processSquarePayment(token) {
+            if (result.status === 'OK') {
+              processSquarePayment(result.token);
+            } else {
+              alert(`Tokenization failed: ${result.errors[0].message}`);
+            }
+          });
+          squareInitialized = true;
+        } catch (error) {
+          console.error("Error initializing Square payments:", error);
+          alert("Failed to load the payment form. Please try again later.");
+        }
+      }
+  
+      // Function to process payment with Square
+      async function processSquarePayment(token) {
         const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
         const amount = determineAmountBasedOnPlan(selectedPlan);
         try {
-            const response = await fetch('/process-payment/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
-                body: JSON.stringify({ source_id: token, plan: selectedPlan, amount })
-            });
-            const jsonResult = await response.json();
-            if (jsonResult.success) window.location.href = '/success/';
-            else alert(`Payment error: ${jsonResult.error}`);
+          const response = await fetch('/process-payment/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: JSON.stringify({ source_id: token, plan: selectedPlan, amount })
+          });
+          const jsonResult = await response.json();
+          if (jsonResult.success) {
+            window.location.href = '/success/';
+          } else {
+            alert(`Payment error: ${jsonResult.error}`);
+          }
         } catch (error) {
-            alert('Unexpected payment error: ' + error.message);
+          alert('Unexpected payment error: ' + error.message);
         }
-    }
-
-    function determineAmountBasedOnPlan(plan) {
-        const prices = { '1-month': 1879, 'quarterly': 16911, 'yearly': 18098, 'lifetime': 29700 };
+      }
+  
+      // Determines amount based on selected plan
+      function determineAmountBasedOnPlan(plan) {
+        const prices = { '1-month': 1879, 'quarterly': 5069, 'yearly': 18098, 'lifetime': 29700 };
         return prices[plan] || 0;
-    }
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    const planInputs = document.querySelectorAll('input[name="plan"]');
-    const selectedPlanPrice = document.getElementById('selected-plan-price');
-    const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
-
-    function updateSelectedPlanPrice() {
+      }
+  
+      // Update prices dynamically based on selected plan
+      const planInputs = document.querySelectorAll('input[name="plan"]');
+      function updateSelectedPlanPrice() {
         const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
         let introPrice, renewalPrice;
-
-        // Set pricing based on the selected plan
+  
+        // Set pricing based on selected plan
         switch (selectedPlan) {
-            case '1-month':
-                introPrice = '18.79';
-                renewalPrice = '18.79';
-                break;
-            case 'quarterly':
-                introPrice = '50.69';
-                renewalPrice = '50.69';
-                break;
-            case 'yearly':
-                introPrice = '180.98';
-                renewalPrice = '180.98';
-                break;
-            case 'lifetime':
-                introPrice = '297.00';
-                renewalPrice = '297.00';
-                break;
-            default:
-                introPrice = '0.00';
-                renewalPrice = '0.00';
+          case '1-month':
+            introPrice = '18.79';
+            renewalPrice = '18.79';
+            break;
+          case 'quarterly':
+            introPrice = '50.69';
+            renewalPrice = '50.69';
+            break;
+          case 'yearly':
+            introPrice = '180.98';
+            renewalPrice = '180.98';
+            break;
+          case 'lifetime':
+            introPrice = '297.00';
+            renewalPrice = '297.00';
+            break;
+          default:
+            introPrice = '0.00';
+            renewalPrice = '0.00';
         }
-
-        // Update the displayed prices
+  
+        // Update displayed prices
         selectedPlanPrice.textContent = `$${introPrice}`;
         selectedPlanRenewalPrice.textContent = `$${renewalPrice}`;
-    }
-
-    // Run update function on page load to set default prices
-    updateSelectedPlanPrice();
-
-    // Add change event listener to all plan inputs
-    planInputs.forEach(plan => {
-        plan.addEventListener('change', updateSelectedPlanPrice);
+      }
+  
+      // Run update function on page load and add event listeners to plan inputs
+      updateSelectedPlanPrice();
+      planInputs.forEach(plan => plan.addEventListener('change', updateSelectedPlanPrice));
     });
-});
-
-
- </script>
+  </script>
+  
 {% endblock %}
