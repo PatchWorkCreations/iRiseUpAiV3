@@ -651,28 +651,41 @@
       });
   
       async function setupSquarePayments() {
-        if (squareInitialized) return;
-        try {
-          const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
-          const card = await payments.card();
-          await card.attach('#card-container');
-          
-          // Form submission for Square
-          document.getElementById('payment-form').addEventListener('submit', async (event) => {
+    if (squareInitialized) return;
+    try {
+        console.log("Initializing Square payments...");
+        const payments = Square.payments('sq0idp-PZacowFKTAof60qiVnZEIQ', '45B8XGXSPP8E3');
+        
+        // Check if payments instance is created successfully
+        if (!payments) {
+            throw new Error("Failed to initialize Square Payments. Please check your Application ID and Location ID.");
+        }
+
+        const card = await payments.card();
+        await card.attach('#card-container');
+        
+        console.log("Square payment form loaded successfully.");
+
+        // Set up form submission
+        document.getElementById('payment-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             const result = await card.tokenize();
             if (result.status === 'OK') {
-              processSquarePayment(result.token);
+                console.log("Tokenization successful:", result.token);
+                processSquarePayment(result.token);
             } else {
-              alert(`Tokenization failed: ${result.errors[0].message}`);
+                console.error("Tokenization failed:", result.errors);
+                alert(`Tokenization failed: ${result.errors[0].message}`);
             }
-          });
-          squareInitialized = true;
-        } catch (error) {
-          console.error("Error initializing Square payments:", error);
-          alert("Failed to load the payment form. Please try again later.");
-        }
-      }
+        });
+        
+        squareInitialized = true;
+    } catch (error) {
+        console.error("Error initializing Square payments:", error);
+        alert("Failed to load the payment form. Please try again later.");
+    }
+}
+
   
       // Function to process payment with Square
       async function processSquarePayment(token) {
