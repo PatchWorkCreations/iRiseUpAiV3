@@ -333,7 +333,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Square payment setup function
     async function setupSquarePayments() {
         if (squareInitialized) return; // Prevent re-initialization
-        const payments = Square.payments('sq0idp-jpJ9YFYpLwuh5nFx4B-qXg', '45B8XGXSPP8E3');
+        //const payments = Square.payments('sq0idp-jpJ9YFYpLwuh5nFx4B-qXg', '45B8XGXSPP8E3');
+        const payments = Square.payments('sandbox-sq0idb-9yk1Ann28-d97Re6cm893g', '45B8XGXSPP8E3');
         const card = await payments.card();
         await card.attach('#card-container');
 

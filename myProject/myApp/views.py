@@ -38,12 +38,20 @@ def personalized_plan(request):
 
     return render(request, 'myApp/personalized_plan.html', context)
 
-
+'''    
 # Initialize the Square Client
 square_client = Client(
     access_token=settings.SQUARE_ACCESS_TOKEN,
     environment='production',
 )
+'''
+
+# Initialize the Square Client
+square_client = Client(
+    access_token=settings.SQUARE_ACCESS_TOKEN,
+    environment='sandbox',  # Change 'production' to 'sandbox' for testing
+)
+
 
 import json
 import logging
