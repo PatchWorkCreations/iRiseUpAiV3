@@ -3,7 +3,7 @@
 {% block title %}Your Personalized AI-Driven Plan{% endblock %}
 {% block content %}
 <head>
-    <!--<script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>-->
+    <script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>
     <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script> <!-- Sandbox -->
     <script src="https://www.paypal.com/sdk/js?client-id=AX8s0c8qV3I8_8EORobzhGaQ7sg5m_9_vVfLUmXLqmJaEM2lYURoArIL9wjJDVxZ2EIHRKI8qWoZrKGK_&vault=true&intent=subscription"></script>
 
@@ -333,46 +333,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Square payment setup function
     async function setupSquarePayments() {
-    if (squareInitialized) return; // Prevent re-initialization
-    
-    const payments = Square.payments('sandbox-sq0idb-9yk1Ann28-d97Re6cm893g', '45B8XGXSPP8E3');
-    const card = await payments.card();
-    await card.attach('#card-container');
+        if (squareInitialized) return; // Prevent re-initialization
+        const payments = Square.payments('sandbox-sq0idb-9yk1Ann28-d97Re6cm893g', '45B8XGXSPP8E3');
+        const card = await payments.card();
+        await card.attach('#card-container');
 
-    const payButton = document.getElementById('payment-form').querySelector('button[type="submit"]');
-    payButton.addEventListener('click', async function (event) {
-        event.preventDefault();
-        
-        try {
-            const result = await card.tokenize();
-            if (result.status === 'OK') {
-                const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
-                const amount = determineAmountBasedOnPlan(selectedPlan);
-                
-                // Prompt user to complete the verification within a limited time
-                alert("Please complete the verification promptly to avoid timeouts.");
+        const payButton = document.getElementById('payment-form').querySelector('button[type="submit"]');
+        payButton.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                const result = await card.tokenize();
+                if (result.status === 'OK') {
+                    // Get selected plan and determine the amount
+                    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+                    const amount = determineAmountBasedOnPlan(selectedPlan);
 
-                const verificationToken = await verifyBuyer(payments, result.token, amount);
-                
-                const response = await fetch('/process-payment/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    body: JSON.stringify({
-                        source_id: result.token,
-                        plan: selectedPlan,
-                        amount: amount,
-                        verification_token: verificationToken
-                    }),
-                });
+                    // New: Verify the buyer using SCA with CHARGE_AND_STORE intent
+                    const verificationToken = await verifyBuyer(payments, result.token, amount);
 
-                const jsonResult = await response.json();
+                    // Send the payment request with the verification token
+                    const response = await fetch('/process-payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({
+                            source_id: result.token,
+                            plan: selectedPlan,
+                            amount: amount,
+                            verification_token: verificationToken  // New: Include verification token
+                        }),
+                    });
+
+                    const jsonResult = await response.json();
+
                 if (jsonResult.success) {
                     window.location.href = '/success/';
                 } else {
-                    handlePaymentError(jsonResult.error);
+                    handlePaymentError(jsonResult.error);  // Handle errors in a friendly way
                 }
             } else {
                 alert('Tokenization failed: ' + result.errors[0].message);
@@ -382,9 +381,8 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Payment failed: ' + e.message);
         }
     });
-    squareInitialized = true;
+    squareInitialized = true; // Set flag to prevent re-initialization
 }
-
 
 function handlePaymentError(error) {
     let userMessage = 'An error occurred during payment.';
@@ -422,8 +420,7 @@ function handlePaymentError(error) {
 
 
     // Function to set the selected plan in the session via AJAX
-            function setSelectedPlanInSession(plan) {
-            console.log("Selected plan:", plan);  // Log the selected plan
+        function setSelectedPlanInSession(plan) {
             fetch('/set-selected-plan/', {
                 method: 'POST',
                 headers: {
@@ -436,11 +433,17 @@ function handlePaymentError(error) {
                 if (data.success) {
                     console.log('Plan set in session successfully');
                 } else {
-                    console.error('Failed to set plan in session:', data.error);  // Log error details if setting fails
+                    console.error('Failed to set plan in session');
                 }
-            }).catch(error => console.error('Error in fetch:', error));  // Log fetch errors
+            });
         }
 
+        // Event listener for plan selection
+        //document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+        //    planInput.addEventListener('change', function() {
+        //        setSelectedPlanInSession(this.value);
+        //    });
+        //});
 
         document.querySelectorAll('input[name="plan"]').forEach(planInput => {
             planInput.addEventListener('change', function() {
@@ -452,30 +455,31 @@ function handlePaymentError(error) {
 
     // New: Add the verifyBuyer function with the correct amount and CHARGE_AND_STORE intent
     async function verifyBuyer(payments, token, amount) {
-    const verificationDetails = {
-        amount: (amount / 100).toFixed(2),
-        currencyCode: 'USD',
-        intent: 'CHARGE_AND_STORE',
-        billingContact: {
-            addressLines: [document.getElementById('addressLine1').value],
-            familyName: document.getElementById('familyName').value,
-            givenName: document.getElementById('givenName').value,
-            email: document.getElementById('email').value,
-            countryCode: document.getElementById('countryCode').value,
-            phone: document.getElementById('phone').value,
-            state: document.getElementById('state').value,
-            city: document.getElementById('city').value,
-        },
-    };
+        const verificationDetails = {
+            amount: (amount / 100).toFixed(2),  // Convert cents to dollars
+            currencyCode: 'USD',  // Ensure this matches the currency used in the transaction
+            intent: 'CHARGE_AND_STORE',  // Intent for charging and storing the card
+            billingContact: {
+                // Collect billing details from the user input
+                addressLines: [
+                    document.getElementById('addressLine1').value,
+                ],
+                familyName: document.getElementById('familyName').value,
+                givenName: document.getElementById('givenName').value,
+                email: document.getElementById('email').value,
+                countryCode: document.getElementById('countryCode').value,
+                phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+            },
+        };
 
-    try {
-        const verificationResults = await payments.verifyBuyer(token, verificationDetails);
+        const verificationResults = await payments.verifyBuyer(
+            token,
+            verificationDetails
+        );
         return verificationResults.token;
-    } catch (error) {
-        console.error("Verification failed: ", error.message);
-        alert("Verification failed. Please try again.");
     }
-}
 
     // PayPal payment setup function
     async function setupPayPalPayments() {
@@ -666,6 +670,37 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Initialize the timer duration (10 minutes)
+let duration = 10 * 60; // 10 minutes in seconds
+
+// Select the minutes and seconds elements
+const minutesElement = document.getElementById('minutes');
+const secondsElement = document.getElementById('seconds');
+
+// Function to start the countdown
+function startCountdown() {
+    const countdownInterval = setInterval(() => {
+        // Calculate minutes and seconds
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+
+        // Update the HTML with the current minutes and seconds
+        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
+        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
+
+        // Check if the timer has finished
+        if (duration <= 0) {
+            clearInterval(countdownInterval); // Stop the timer
+            // You can trigger any action you want when the timer ends here
+            alert('Countdown finished!');
+        } else {
+            duration--; // Decrease the duration by 1 second
+        }
+    }, 1000); // Run the function every 1000 milliseconds (1 second)
+}
+
+// Start the countdown when the page loads
+window.onload = startCountdown;
 
 document.addEventListener('DOMContentLoaded', function () {
     // Scroll to plan selection section when "Choose a Plan" is clicked
