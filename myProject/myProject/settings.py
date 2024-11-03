@@ -18,12 +18,13 @@ SECRET_KEY = 'django-insecure-*9l6wdsi+%0$m^&^wv@u3&yswjt2_l&*3-0@hs_88%3(y!#6eb
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'ai-iriseup-production.up.railway.app',
-    '127.0.0.1',  # If you also want to allow local development
+    'iriseupaiv3-production.up.railway.app',
+    '127.0.0.1',
     'localhost',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://ai-iriseup-production.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = ['https://iriseupaiv3-production.up.railway.app']
 
 
 # Application definition
@@ -138,3 +139,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Access the environment variable
 SQUARE_ACCESS_TOKEN = env('SQUARE_ACCESS_TOKEN')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
