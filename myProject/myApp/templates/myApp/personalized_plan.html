@@ -477,18 +477,6 @@ function handlePaymentError(error) {
     }
 }
 
-function allFieldsFilled() {
-    const requiredFields = [
-        'givenName', 'familyName', 'addressLine1', 'city', 'state', 'countryCode', 'phone', 'email'
-    ];
-    return requiredFields.every(id => document.getElementById(id).value.trim() !== '');
-}
-
-if (!allFieldsFilled()) {
-    alert("Please fill out all required fields.");
-    return;
-}
-
     // PayPal payment setup function
     async function setupPayPalPayments() {
     if (paypalInitialized) return; // Prevent re-initialization
