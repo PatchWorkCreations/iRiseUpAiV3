@@ -452,31 +452,42 @@ function handlePaymentError(error) {
 
     // New: Add the verifyBuyer function with the correct amount and CHARGE_AND_STORE intent
     async function verifyBuyer(payments, token, amount) {
-        const verificationDetails = {
-            amount: (amount / 100).toFixed(2),  // Convert cents to dollars
-            currencyCode: 'USD',  // Ensure this matches the currency used in the BotTransaction
-            intent: 'CHARGE_AND_STORE',  // Intent for charging and storing the card
-            billingContact: {
-                // Collect billing details from the user input
-                addressLines: [
-                    document.getElementById('addressLine1').value,
-                ],
-                familyName: document.getElementById('familyName').value,
-                givenName: document.getElementById('givenName').value,
-                email: document.getElementById('email').value,
-                countryCode: document.getElementById('countryCode').value,
-                phone: document.getElementById('phone').value,
-                state: document.getElementById('state').value,
-                city: document.getElementById('city').value,
-            },
-        };
+    const verificationDetails = {
+        amount: (amount / 100).toFixed(2),
+        currencyCode: 'USD',
+        intent: 'CHARGE_AND_STORE',
+        billingContact: {
+            addressLines: [document.getElementById('addressLine1').value],
+            familyName: document.getElementById('familyName').value,
+            givenName: document.getElementById('givenName').value,
+            email: document.getElementById('email').value,
+            countryCode: document.getElementById('countryCode').value,
+            phone: document.getElementById('phone').value,
+            state: document.getElementById('state').value,
+            city: document.getElementById('city').value,
+        },
+    };
 
-        const verificationResults = await payments.verifyBuyer(
-            token,
-            verificationDetails
-        );
+    try {
+        const verificationResults = await payments.verifyBuyer(token, verificationDetails);
         return verificationResults.token;
+    } catch (error) {
+        console.error("Verification failed: ", error.message);
+        alert("Verification failed. Please try again.");
     }
+}
+
+function allFieldsFilled() {
+    const requiredFields = [
+        'givenName', 'familyName', 'addressLine1', 'city', 'state', 'countryCode', 'phone', 'email'
+    ];
+    return requiredFields.every(id => document.getElementById(id).value.trim() !== '');
+}
+
+if (!allFieldsFilled()) {
+    alert("Please fill out all required fields.");
+    return;
+}
 
     // PayPal payment setup function
     async function setupPayPalPayments() {
@@ -667,37 +678,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Initialize the timer duration (10 minutes)
-let duration = 10 * 60; // 10 minutes in seconds
-
-// Select the minutes and seconds elements
-const minutesElement = document.getElementById('minutes');
-const secondsElement = document.getElementById('seconds');
-
-// Function to start the countdown
-function startCountdown() {
-    const countdownInterval = setInterval(() => {
-        // Calculate minutes and seconds
-        const minutes = Math.floor(duration / 60);
-        const seconds = duration % 60;
-
-        // Update the HTML with the current minutes and seconds
-        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
-        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
-
-        // Check if the timer has finished
-        if (duration <= 0) {
-            clearInterval(countdownInterval); // Stop the timer
-            // You can trigger any action you want when the timer ends here
-            alert('Countdown finished!');
-        } else {
-            duration--; // Decrease the duration by 1 second
-        }
-    }, 1000); // Run the function every 1000 milliseconds (1 second)
-}
-
-// Start the countdown when the page loads
-window.onload = startCountdown;
 
 document.addEventListener('DOMContentLoaded', function () {
     // Scroll to plan selection section when "Choose a Plan" is clicked
