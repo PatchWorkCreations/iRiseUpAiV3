@@ -309,8 +309,7 @@ import json
 import uuid
 import logging
 from datetime import timedelta
-from .models import BotService, AIUserAccess, BotTransaction, BotUserPaymentInfo
-from .utils import determine_amount_based_on_plan, send_welcomepassword_email, save_quiz_response
+from .models import BotService, AIUserAccess, BotBotTransaction, BotUserPaymentInfo
 
 logger = logging.getLogger(__name__)
 
