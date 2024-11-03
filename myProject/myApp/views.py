@@ -1,297 +1,532 @@
-# Standard Library Imports
+
+from django.conf import settings
+from django.utils import timezone
+from datetime import datetime, timedelta
+from models import AIUserAccess
+from django.shortcuts import render, get_object_or_404, redirect
+from models import BotService, AIUserAccess
+from django.contrib.auth.decorators import login_required
+
+
+
+
+def personalized_plan(request):
+    if request.method == 'POST':
+        gender = request.POST.get('gender')
+        special_goal = request.POST.get('special_goal')
+        main_goal = request.POST.get('main_goal')
+        
+        # Store data in the session
+        if gender:
+            request.session['gender'] = gender
+        if special_goal:
+            request.session['special_goal'] = special_goal
+        if main_goal:
+            request.session['main_goal'] = main_goal
+        
+        return redirect('next_view_name')  # Replace 'next_view_name' with the actual view name you want to redirect to
+
+    # If the request is GET, render the template with the current session data
+    gender = request.session.get('gender', '')
+    special_goal = request.session.get('special_goal', '')
+    main_goal = request.session.get('main_goal', '')
+    
+    context = {
+        'gender': gender,
+        'special_goal': special_goal,
+        'main_goal' : main_goal,
+    }
+
+    return render(request, 'myApp/personalized_plan.html', context)
+
+
+# Initialize the Square Client
+square_client = Client(
+    access_token=settings.SQUARE_ACCESS_TOKEN,
+    environment='production',
+)
+
+def setSelectedPlanInSession(request):
+    selected_plan = request.POST.get('plan')
+    logger.info(f"Selected plan: {selected_plan}")  # Log the plan value received
+    allowed_plans = ['1-week', '4-week', '12-week', 'lifetime']
+
+    if selected_plan not in allowed_plans:
+        logger.error(f"Invalid plan selected: {selected_plan}")  # Log the invalid plan case
+        return JsonResponse({'success': False, 'error': 'Invalid plan selected.'})
+
+    request.session['selected_plan'] = selected_plan
+    return JsonResponse({'success': True})
+
+
+def determine_amount_based_on_plan(selected_plan):
+    if selected_plan == '1-week':
+        return 1287  # $12.87 in cents
+    elif selected_plan == '4-week':
+        return 3795  # $37.95 in cents
+    elif selected_plan == '12-week':
+        return 9700  # $97.00 in cents
+    elif selected_plan == 'lifetime':
+        return 29700  # $297.00 in cents
+    else:
+        return 0  # Default to 0 for unrecognized plans
+
+
+def grant_BotService_access(user, selected_plan):
+    """
+    This function grants the user access to all BotServices and sets an expiration date based on the selected plan.
+    """
+    # Get all BotServices available in the BotService menu
+    BotServices = BotService.objects.all()
+
+    # Set a default expiration date (optional)
+    expiration_date = None
+
+    # Determine expiration date based on selected plan
+    if selected_plan == '1-week':
+        expiration_date = timezone.now() + timedelta(weeks=1)
+    elif selected_plan == '4-week':
+        expiration_date = timezone.now() + timedelta(weeks=4)
+    elif selected_plan == '12-week':
+        expiration_date = timezone.now() + timedelta(weeks=12)
+    elif selected_plan == 'lifetime':
+        expiration_date = None 
+    else:
+        # Handle the case where the selected plan is not recognized
+        expiration_date = timezone.now() + timedelta(weeks=4)  # Default to 1 week if plan is unrecognized
+        # Optionally, log a warning or handle this situation differently
+        logger.warning(f"Unrecognized selected plan: {selected_plan}, defaulting to 4 week expiration.")
+
+    # Grant access to all BotServices with the determined expiration date
+    for BotService in BotServices:
+        AIUserAccess.objects.create(user=user, BotService=BotService, progress=0.0, expiration_date=expiration_date)
+
+    return True
+
+from django.core.mail import EmailMultiAlternatives
+
+def send_welcomepassword_email(user_email, random_password):
+    """
+    Sends a personalized welcome email with HTML design to new users.
+    """
+    subject = 'Welcome to iRiseUp Academy – Your Account is Ready!'
+    from_email = 'hello@iriseupacademy.com'
+    to_email = [user_email]
+
+    # Plain text content for fallback
+    text_content = (
+        f"Dear {user_email},\n\n"
+        "Welcome to iRiseUp Academy! Your account has been successfully created.\n"
+        f"Here is your temporary password: {random_password}\n\n"
+        "Please log in to update your password and start your learning journey.\n\n"
+        "Best regards,\n"
+        "The iRiseUp Academy Team"
+    )
+
+    # HTML content (you can use your email design)
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to iRiseUp Academy</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }}
+            .container {{
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }}
+            .header {{
+                background-color: #5860F8;
+                color: #ffffff;
+                padding: 20px;
+                text-align: center;
+            }}
+            .header img {{
+                max-width: 120px;
+                margin-bottom: 10px;
+            }}
+            .header h1 {{
+                margin: 0;
+                font-size: 28px;
+                font-weight: bold;
+            }}
+            .content {{
+                padding: 30px 20px;
+                text-align: left;
+                background-color: #ffffff;
+            }}
+            .content p {{
+                font-size: 16px;
+                margin-bottom: 20px;
+            }}
+            .button {{
+                display: inline-block;
+                padding: 12px 25px;
+                color: #ffffff;
+                background-color: #5860F8;
+                text-decoration: none;
+                border-radius: 5px;
+                font-size: 16px;
+                margin-top: 20px;
+            }}
+            .button:hover {{
+                background-color: #4752c4;
+            }}
+            .footer {{
+                text-align: center;
+                padding: 20px;
+                background-color: #f4f4f4;
+                color: #888;
+                font-size: 12px;
+            }}
+            .footer p {{
+                margin: 0;
+            }}
+            .footer a {{
+                color: #5860F8;
+                text-decoration: none;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Email Header -->
+            <div class="header">
+                <img src="https://www.iriseupacademy.com/static/myapp/images/resource/author-6.png" alt="iRiseUp Academy Logo">
+                <h1>Welcome to iRiseUp Academy, {user_email}!</h1>
+            </div>
+
+            <!-- Email Content -->
+            <div class="content">
+                <p>Hello {user_email},</p>
+                <p>Your account has been successfully created. Below is your temporary password:</p>
+                <p><strong>Temporary Password:</strong> {random_password}</p>
+                <p>Please log in and update your password for security.</p>
+                <a href="https://www.iriseupacademy.com/sign_in" class="button">Log In Now</a>
+                <p>Best regards,<br><strong>The iRiseUp Academy Team</strong></p>
+            </div>
+
+            <!-- Email Footer -->
+            <div class="footer">
+                <p>iRiseUp Academy, Columbus, Ohio, USA | <a href="https://iriseupacademy.com/unsubscribe">Unsubscribe</a></p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    # Create the email message with plain text and HTML alternatives
+    email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+from django.utils import timezone
+from datetime import timedelta
+import logging
+from models import BotService, AIUserAccess
+
+logger = logging.getLogger(__name__)
+
+def grant_service_access(user, selected_plan):
+    """
+    Grants the user access to all bot services and sets an expiration date based on the selected plan.
+    """
+    # Get all bot services available
+    services = BotService.objects.all()
+
+    # Set a default expiration date (optional)
+    expiration_date = None
+
+    # Determine expiration date based on selected plan
+    if selected_plan == '1-week':
+        expiration_date = timezone.now() + timedelta(weeks=1)
+    elif selected_plan == '4-week':
+        expiration_date = timezone.now() + timedelta(weeks=4)
+    elif selected_plan == '12-week':
+        expiration_date = timezone.now() + timedelta(weeks=12)
+    elif selected_plan == 'lifetime':
+        expiration_date = None  # Lifetime access, no expiration
+    else:
+        # Handle unrecognized plans
+        expiration_date = timezone.now() + timedelta(weeks=4)  # Default to 4 weeks if unrecognized
+        logger.warning(f"Unrecognized selected plan: {selected_plan}, defaulting to 4-week expiration.")
+
+    # Grant access to all bot services with the determined expiration date
+    for service in services:
+        AIUserAccess.objects.create(
+            user=user,
+            bot_service=service,
+            expiration_date=expiration_date,
+            progress=0.0
+        )
+
+    return True
+
+
+# Get an instance of a logger
+logger = logging.getLogger('myapp')
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+import json
+import uuid
+import logging
+from square.client import Client
+from .models import User  # Adjust according to your user model
+from django.contrib.auth.models import User  # For User model
+from django.utils.crypto import get_random_string  # For generating random passwords
+from django.core.mail import send_mail  # For sending emails
+from .models import BotUserPaymentInfo, User, AIUserAccess
+
+logger = logging.getLogger(__name__)
+
+# Initialize Square client
+client = Client(
+    access_token=settings.SQUARE_ACCESS_TOKEN,
+    environment='production',  # Change to 'production' when you're ready
+)
+
+from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.utils import timezone
 import json
 import uuid
 import logging
 from datetime import timedelta
+from .models import BotService, AIUserAccess, BotTransaction, BotUserPaymentInfo
+from .utils import determine_amount_based_on_plan, send_welcomepassword_email, save_quiz_response
 
-# Django Imports
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives, send_mail
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
-from django.utils.crypto import get_random_string
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
-from django.contrib.auth.views import (
-    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,
-    PasswordResetCompleteView, PasswordChangeView, PasswordChangeDoneView
-)
-
-# App Models and Forms
-from .models import SquareCustomer, UserAccess, Transaction
-from .forms import CustomPasswordChangeForm
-
-# Third-party Imports
-from square.client import Client
-
-# Initialize Logger
 logger = logging.getLogger(__name__)
 
-# Initialize Square Client
-square_client = Client(
-    access_token=settings.SQUARE_ACCESS_TOKEN,
-    environment='production'
-)
-
-# Basic Views
-def index(request):
-    return render(request, 'myApp/index.html')
-
-def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('form-name')
-        email = request.POST.get('form-email')
-        subject = request.POST.get('form-subject')
-        message = request.POST.get('form-message')
-
-        # Send email
-        send_mail(
-            subject,
-            f'Message from {name} ({email}):\n\n{message}',
-            settings.DEFAULT_FROM_EMAIL,
-            [settings.DEFAULT_TO_EMAIL],
-            fail_silently=False,
-        )
-        return redirect(reverse('index'))
-    return render(request, 'index.html')
-
-# Initialize logger and Square client
-logger = logging.getLogger(__name__)
-square_client = Client(
-    access_token=settings.SQUARE_ACCESS_TOKEN,
-    environment='production'  # Ensure this is set to 'production' for live payments
-)
-
-# Payment Processing Endpoint
-# Square Payment Processing
 @csrf_exempt
 def process_payment(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "Invalid request method."}, status=405)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            card_token = data.get('source_id')
+            selected_plan = data.get('plan')
+            verification_token = data.get('verification_token')
 
-    try:
-        data = json.loads(request.body)
-        card_token = data.get('source_id')
-        selected_plan = data.get('plan')
-        user_email = request.session.get('email')
-        discount_code = data.get('discount_code')
+            # Ensure the correct email is being used from the user's current session
+            user_email = request.session.get('email')
+            if not user_email:
+                logger.error("Email is missing from session. Cannot proceed with payment.")
+                return JsonResponse({"error": "Email is missing from session."}, status=400)
 
-        if not user_email or not card_token or not selected_plan:
-            return JsonResponse({"error": "Missing required details."}, status=400)
+            # Ensure the amount is valid based on the selected plan
+            amount = determine_amount_based_on_plan(selected_plan)
+            if amount <= 0:
+                return JsonResponse({"error": "Invalid plan selected."}, status=400)
 
-        # Determine payment amount
-        amount = determine_amount_based_on_plan(selected_plan)
-        if discount_code == 'TESTDISCOUNT':
-            amount = 100  # Apply discount
+            # Step 1: Create a new customer or retrieve the existing one
+            customer_result = square_client.customers.create_customer(
+                body={
+                    "given_name": data.get('givenName'),
+                    "family_name": data.get('familyName'),
+                    "email_address": user_email,
+                }
+            )
+            if customer_result.is_error():
+                logger.error("Customer creation failed: %s", customer_result.errors)
+                user = User.objects.get(email=user_email)
+                BotTransaction.objects.create(
+                    user=user,
+                    amount=amount,
+                    subscription_type=selected_plan,
+                    status='error',
+                    error_logs=str(customer_result.errors),
+                    recurring=False
+                )
+                return JsonResponse({"error": "Failed to create customer profile."}, status=400)
 
-        # Retrieve or create Square customer
-        customer_id = get_or_create_square_customer(data, user_email)
-        if not customer_id:
-            return JsonResponse({"error": "Failed to retrieve customer profile."}, status=400)
+            customer_id = customer_result.body['customer']['id']
 
-        # Process payment and return detailed error messages if applicable
-        payment_result = process_square_payment(card_token, amount, customer_id)
-        if payment_result.get("error"):
-            logger.error("Payment error details: %s", payment_result["error"])  # Log error details
-            return JsonResponse({"error": payment_result["error"]}, status=400)
+            # Step 2: Make the payment request with the verification token and store the card on file
+            payment_result = square_client.payments.create_payment(
+                body={
+                    "source_id": card_token,
+                    "idempotency_key": str(uuid.uuid4()),
+                    "amount_money": {
+                        "amount": amount,
+                        "currency": "USD"
+                    },
+                    "verification_token": verification_token,
+                    "autocomplete": True,
+                    "customer_id": customer_id,
+                }
+            )
+            logger.info("Square API Payment Response: %s", payment_result)
 
-        # Handle successful payment and user access logic
-        user = get_or_create_user(user_email, data)
-        expiration_date, next_billing_date = get_billing_dates(selected_plan)
-        store_user_course_access(user, selected_plan, expiration_date)
-        save_square_customer_info(user, customer_id, payment_result["card_id"])
+            if payment_result.is_error():
+                error_codes = [error['code'] for error in payment_result.errors]
+                logger.error("Payment Error: %s", error_codes)
 
-        # Record transaction
-        Transaction.objects.create(
-            user=user,
-            amount=amount,
-            subscription_type=selected_plan,
-            status='success',
-            recurring=selected_plan in ['1-week', '4-week', '12-week'],
-            next_billing_date=next_billing_date
-        )
+                # Handle various error codes with specific messages
+                error_messages = {
+                    'CARD_DECLINED': "Your card was declined. Please try another payment method.",
+                    'INSUFFICIENT_FUNDS': "Insufficient funds. Please check your account balance.",
+                    'INVALID_CARD': "Invalid card details. Please check and try again.",
+                    'EXPIRED_CARD': "Your card has expired. Please use another card.",
+                    'NETWORK_ERROR': "Network issue encountered. Please try again later.",
+                    'FRAUD_REJECTED': "Payment rejected due to suspected fraud. Please contact your bank.",
+                    'AUTHENTICATION_REQUIRED': "Additional authentication required. Please complete the verification."
+                }
+                for code in error_codes:
+                    if code in error_messages:
+                        return JsonResponse({"error": error_messages[code]}, status=400)
+                return JsonResponse({"error": "Payment failed. Please try again."}, status=400)
 
-        return JsonResponse({"success": True})
+            payment_id = payment_result.body['payment']['id']
 
-    except Exception as e:
-        # Log unexpected errors
-        logger.error("Unexpected error during payment processing: %s", str(e), exc_info=True)
-        return JsonResponse({"error": "An unexpected error occurred. Please try again later."}, status=500)
+            # Step 3: Store the card on file for the customer
+            card_result = square_client.cards.create_card(
+                body={
+                    "idempotency_key": str(uuid.uuid4()),
+                    "source_id": payment_id,
+                    "verification_token": verification_token,
+                    "card": {
+                        "cardholder_name": f"{data.get('givenName')} {data.get('familyName')}",
+                        "customer_id": customer_id,
+                    }
+                }
+            )
+            if card_result.is_error():
+                logger.error("Card storage failed: %s", card_result.errors)
+                BotTransaction.objects.create(
+                    user=user,
+                    amount=amount,
+                    subscription_type=selected_plan,
+                    status='error',
+                    error_logs=str(card_result.errors),
+                    recurring=False
+                )
+                return JsonResponse({"error": "Failed to store card on file."}, status=400)
 
-# Helper Functions
-def determine_amount_based_on_plan(plan):
-    plan_amounts = {'1-week': 1287, '4-week': 3795, '12-week': 9700, 'lifetime': 29700}
-    return plan_amounts.get(plan, 0)
+            card_id = card_result.body['card']['id']
 
-def get_or_create_square_customer(data, email):
-    try:
-        result = square_client.customers.create_customer(
-            body={
-                "given_name": data.get('givenName'),
-                "family_name": data.get('familyName'),
-                "email_address": email
-            }
-        )
-        if result.is_success():
-            return result.body['customer']['id']
-        else:
-            logger.error("Square API error (create_customer): %s", result.errors)
-    except Exception as e:
-        logger.error("Error creating Square customer: %s", e)
-    return None
+            # Step 4: Create or retrieve the user in the Django application
+            user, created = User.objects.get_or_create(
+                username=user_email,
+                defaults={'email': user_email}
+            )
 
-def process_square_payment(card_token, amount, customer_id):
-    try:
-        result = square_client.payments.create_payment(
-            body={
-                "source_id": card_token,
-                "idempotency_key": str(uuid.uuid4()),
-                "amount_money": {"amount": amount, "currency": "USD"},
-                "customer_id": customer_id,
-            }
-        )
-        if result.is_success():
-            return {"card_id": result.body['payment']['card_details']['card']['id']}
-        else:
-            # Capture detailed Square errors if the payment fails
-            error_messages = [error['detail'] for error in result.errors]
-            logger.error("Square Payment API error: %s", error_messages)
-            return {"error": "Payment failed: " + "; ".join(error_messages)}
-    except Exception as e:
-        logger.error("Unexpected error in process_square_payment: %s", e, exc_info=True)
-        return {"error": "An unexpected error occurred while processing payment."}
+            if created:
+                random_password = get_random_string(8)
+                user.set_password(random_password)
+                user.save()
 
-def get_or_create_user(email, data):
-    user, created = User.objects.get_or_create(username=email, defaults={'email': email})
-    if created:
-        random_password = get_random_string(8)
-        user.set_password(random_password)
-        user.save()
-        send_welcome_password_email(email, random_password)
-    return user
+                # Send the welcome email
+                send_welcomepassword_email(user_email, random_password)
 
-def get_billing_dates(plan):
-    duration = {'1-week': timedelta(weeks=1), '4-week': timedelta(weeks=4), '12-week': timedelta(weeks=12)}.get(plan)
-    expiration_date = timezone.now() + duration if duration else None
-    return expiration_date, expiration_date
+            logger.info(f"User {user_email} processed for payment.")
 
-def store_user_course_access(user, plan, expiration_date):
-    UserAccess.objects.update_or_create(
-        user=user, defaults={'expiration_date': expiration_date, 'selected_plan': plan}
-    )
+            # Step 5: Save any associated information to the user (optional step)
+            save_quiz_response(request, user)
 
-def save_square_customer_info(user, customer_id, card_id):
-    SquareCustomer.objects.update_or_create(
-        user=user, defaults={'customer_id': customer_id, 'card_id': card_id}
-    )
+            # Step 6: Store the customer_id and card_id in the database
+            BotUserPaymentInfo.objects.update_or_create(
+                user=user,
+                defaults={'customer_id': customer_id, 'card_id': card_id}
+            )
 
-def send_welcome_password_email(user_email, random_password):
-    subject = 'Welcome to iRiseUp.Ai – Your Account is Ready!'
-    from_email = 'hello@iriseupacademy.com'
-    text_content = (
-        f"Dear {user_email},\n\n"
-        "Welcome to iRiseUp.Ai! Your account has been successfully created.\n"
-        f"Here is your temporary password: {random_password}\n\n"
-        "Please log in to update your password and start your learning journey.\n\n"
-        "Best regards,\nThe iRiseUp.Ai Team"
-    )
-    html_content = f"""[...HTML email content...]"""  # Keep HTML content here
-    email = EmailMultiAlternatives(subject, text_content, from_email, [user_email])
-    email.attach_alternative(html_content, "text/html")
-    email.send()
+            # Step 7: Set expiration and billing dates based on the selected plan
+            expiration_date = None
+            next_billing_date = None
+            if selected_plan == '1-week':
+                expiration_date = timezone.now() + timedelta(weeks=1)
+                next_billing_date = expiration_date
+            elif selected_plan == '4-week':
+                expiration_date = timezone.now() + timedelta(weeks=4)
+                next_billing_date = expiration_date
+            elif selected_plan == '12-week':
+                expiration_date = timezone.now() + timedelta(weeks=12)
+                next_billing_date = expiration_date
+            elif selected_plan == 'lifetime':
+                expiration_date = None
+                next_billing_date = None
 
-# Password Reset and Change Views
-class CustomPasswordResetView(PasswordResetView):
-    template_name = 'myApp/forgot_password.html'
-    success_url = reverse_lazy('password_reset_done')
+            # Update or create AIUserAccess for the plan
+            AIUserAccess.objects.update_or_create(
+                user=user,
+                defaults={
+                    'expiration_date': expiration_date,
+                    'selected_plan': selected_plan
+                }
+            )
 
-class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'myApp/password_reset_done.html'
+            # Step 9: Create a BotTransaction with a success status and recurring info
+            BotTransaction.objects.create(
+                user=user,
+                amount=amount,
+                subscription_type=selected_plan,
+                status='success',
+                recurring=selected_plan in ['1-week', '4-week', '12-week'],
+                next_billing_date=next_billing_date
+            )
 
-def custom_password_reset_confirm(request, uidb64=None, token=None):
-    # Handle password reset confirmation
-    pass  # Implement function logic here
+            return JsonResponse({"success": True})
 
-class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'myApp/password_reset_complete.html'
+        except Exception as e:
+            logger.error("Unexpected error occurred: %s", str(e), exc_info=True)
+            user = User.objects.get(email=user_email) if 'user_email' in locals() else None
+            if user:
+                BotTransaction.objects.create(
+                    user=user,
+                    amount=amount,
+                    subscription_type=selected_plan,
+                    status='error',
+                    error_logs=str(e),
+                    recurring=False
+                )
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
 
-class CustomPasswordChangeView(PasswordChangeView):
-    form_class = CustomPasswordChangeForm
-    template_name = 'myApp/change_password.html'
-    success_url = reverse_lazy('password_change_done')
+    return JsonResponse({"error": "Invalid request method."}, status=405)
 
-class CustomPasswordChangeDoneView(PasswordChangeDoneView):
-    template_name = 'myApp/password_change_done.html'
 
-def password_reset_invalid_link(request, uidb64=None, token=None):
-    # Handle invalid password reset link
-    return render(request, 'myApp/password_reset_invalid.html')
+from django.shortcuts import render
+from models import BotService, AIUserAccess
+from django.core.paginator import Paginator
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from .forms import SignInForm  # Import the form
-import logging
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-
-logger = logging.getLogger(__name__)
-
-def sign_in(request):
-    # Check if the user is already authenticated
+def coursemenu(request):
     if request.user.is_authenticated:
-        logger.debug(f"User {request.user.username} tried to access the login page while already logged in.")
-        return redirect('coursemenu')  # Redirect to the course menu or appropriate page
-    
-    if request.method == 'POST':
-        form = SignInForm(request.POST)
+        # Get the current page number from the request
+        page_number = request.GET.get('page', 1)
 
-        if form.is_valid():
-            login_identifier = form.cleaned_data.get('login_identifier')
-            password = form.cleaned_data.get('password')
-            logger.debug(f"Attempting login for identifier: {login_identifier}")
+        # Fetch all bot services
+        all_services = BotService.objects.filter(is_active=True)
 
-            # Authenticate using username or email
-            user = authenticate(request, username=login_identifier, password=password)
+        # Separate saved and favorite bot services for the user
+        saved_services = AIUserAccess.objects.filter(user=request.user, is_saved=True)
+        favorite_services = AIUserAccess.objects.filter(user=request.user, is_favorite=True)
 
-            if user is None:
-                try:
-                    user = User.objects.get(email=login_identifier)
-                    user = authenticate(request, username=user.username, password=password)
-                except User.DoesNotExist:
-                    user = None
+        # Pagination for all services (recommended bot services)
+        paginator = Paginator(all_services, 8)  # 8 bot services per page
+        recommended_services_page = paginator.get_page(page_number)
 
-            if user is not None:
-                # Check if the user has logged in before
-                if user.last_login is None:
-                    logger.debug(f"First login detected for user: {user.username}")
-                    login(request, user)
-                    messages.info(request, 'Please change your password to continue.')
-                    return redirect('password_change')
-                else:
-                    login(request, user)
-                    logger.debug(f"Redirecting to course menu for user: {user.username}")
-                    messages.success(request, f'Welcome back, {user.username}!')
-                    return redirect('coursemenu')
-            else:
-                logger.error(f"Authentication failed for identifier: {login_identifier}")
-                messages.error(request, 'Invalid username/email or password. Please try again.')
-                return redirect('sign_in')
+        context = {
+            'saved_services': saved_services,
+            'favorite_services': favorite_services,
+            'recommended_services_page': recommended_services_page,  # Include paginated page
+        }
 
-    else:
-        form = SignInForm()
+        return render(request, 'myapp/coursemenu.html', context)
 
-    return render(request, 'myApp/sign_in.html', {'form': form})
-
-
-def sign_out(request):
-    logout(request)  # This logs the user out
-    return redirect('sign_in')  # Redirect to the sign-in page after logging out
+    return render(request, 'myapp/coursemenu.html')
 

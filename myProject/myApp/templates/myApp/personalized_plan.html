@@ -1,0 +1,1440 @@
+{% extends "myApp/base.html" %}
+{% load static %}
+{% block title %}Your Personalized AI-Driven Plan{% endblock %}
+{% block content %}
+<head>
+    <script type="text/javascript" src="https://web.squarecdn.com/v1/square.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AX8s0c8qV3I8_8EORobzhGaQ7sg5m_9_vVfLUmXLqmJaEM2lYURoArIL9wjJDVxZ2EIHRKI8qWoZrKGK_&vault=true&intent=subscription"></script>
+
+</head>
+
+<div class="mobile-container">
+<div class="header-container d-flex justify-content-between align-items-center">
+    <div id="countdown" class="countdown-timer">
+        <span id="minutes">10</span>:<span id="seconds">00</span>
+    </div>
+    <div class="plan-button">
+        <button class="card-button btn btn-primary choose-plan-btn pulsate">Choose a Plan</button>
+    </div>
+</div>
+
+<div class="container text-center mt-5">
+
+    <div class="d-flex justify-content-center mt-4">
+        <div class="card">
+            <div class="row no-gutters">
+                <div class="col-6 text-center">
+                    <h3>Now</h3>
+                    {% if gender == 'Male' %}
+                        <img src= "{% static 'myapp/images/quiz/4.png' %}" alt="Current" class="img-fluid">
+                    {% elif gender == 'Female' %}
+                        <img src="{% static 'myapp/images/quiz/1.png' %}" alt="Current" class="img-fluid">
+                    {% endif %}
+                    <div class="progress-bar-container mt-2">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-label">Moderate</div>
+                            <div class="progress-bar-fill moderate"></div>
+                        </div>
+                        <div class="progress-bar-labels">
+                             
+                        </div>
+                    </div>
+                    <div class="progress-bar-container mt-2">
+                        <h4>Income Potential</h4>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-fill limited"></div>
+                        </div>
+                        <div class="progress-bar-labels">
+                            <span>Limited</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 text-center">
+                    <h3>Goal</h3>
+                    {% if gender == 'Male' %}
+                        <img src="{% static 'myapp/images/quiz/3.png' %}" alt="Goal" class="img-fluid">
+                    {% elif gender == 'Female' %}
+                        <img src="{% static 'myapp/images/quiz/2.png' %}" alt="Goal" class="img-fluid">
+                    {% endif %}
+                    <div class="progress-bar-container mt-2">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-label">High</div>
+                            <div class="progress-bar-fill high"></div>
+                        </div>
+                        <div class="progress-bar-labels">
+                             
+                        </div>
+                    </div>
+                    <div class="progress-bar-container mt-2">
+                        <h4>Income Potential</h4>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-fill high"></div>
+                        </div>
+                        <div class="progress-bar-labels">
+                            <span>Limited</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <p style="text-align: left; color: #aaa;">This is not a guarantee or promise of results.</p>
+    
+
+    <div class="card mt-4" style="background-color: #f7f7fc; border-radius: 20px; padding: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+        <div class="card-body text-center">
+            <h3 class="ai-title">Starting a new skill is easier than you think</h3>
+            <div class="ai-content d-flex align-items-center justify-content-center">
+                <img src="{% static 'myapp/images/quiz/ai_image.png' %}" alt="Goal" class="img-fluid ai-image">
+                <div class="ai-days ms-4">
+                    <div class="ai-day">Day 1 <span class="ai-day-desc">Visual Design & Creativity</span></div>
+                    <div class="ai-day">Day 2 <span class="ai-day-desc">Content Writing & Blogging</span></div>
+                    <div class="ai-day">Day 3 <span class="ai-day-desc">Effective Communication & Presentation</span></div>
+                </div>
+            </div>
+            <ul class="list-unstyled ai-benefits mt-4">
+                <li>👌 No prior experience is required</li>
+                <li>🎓 You don’t need a formal degree to succeed</li>
+                <li>🕒 Learn at your own pace and on your own terms</li>
+            </ul>
+        </div>
+    </div>
+    
+    
+    <div class="readiness_level" style="padding-top: 20px;">    
+        <h2 class="readiness-title" style="text-align: left;">Your readiness: <span class="readiness-percentage">83%</span></h2>
+        <div class="readiness-box">
+            <p><strong class="highlighted-text">4-week</strong> program is enough for you to start your learning journey <span class="icon">💡</span></p>
+        </div>
+    </div>
+    
+
+    <div style="padding-top: 30px;">
+        <div>
+            <h3 style="font-size: x-large;">Try our program and you will:</h3>
+            <ul class="list-unstyled" style="text-align: left;">
+                <li>✔️ Master tools and skills that can boost your income</li>
+                <li>✔️ Discover new digital professions and income sources</li>
+                <li>✔️ Learn essential skills for your chosen career path</li>
+            </ul>
+        
+            <div class="row goals-container">
+                <div class="col-md-6 goal-box">
+                    <h4>Your goal</h4>
+                    <p><span class="goal-icon">🛡️</span><strong>{{ main_goal }}</strong></p>
+                </div>
+                <div class="col-md-6 goal-box">
+                    <h4>Your target</h4>
+                    <p><span class="target-icon">📈</span><strong>{{ special_goal }}</strong></p>
+                </div>
+            </div>    
+        
+            <div id="plan-selection-section" class="plan-selection-container">
+                <div class="plan-option">
+                    <input type="radio" id="1-week-plan" name="plan" value="1-week">
+                    <label for="1-week-plan">
+                        <div class="plan-header">
+                            <span>1-WEEK PLAN</span>
+                            <span>$12.87</span>
+                        </div>
+                        <div class="plan-price">
+                            <span>$1.84</span>
+                            <span>per day</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="plan-option most-popular">
+                    <input type="radio" id="4-week-plan" name="plan" value="4-week" checked>
+                    <label for="4-week-plan">
+                        <div class="most-popular-badge">
+                            <span>👍 MOST POPULAR</span>
+                        </div>
+                        <div class="plan-header" style="padding-top: 55px;">
+                            <span>4-WEEK PLAN</span>
+                            <span>$37.95</span>
+                        </div>
+                        <div class="plan-price">
+                            <span>$1.36</span>
+                            <span>per day</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="plan-option">
+                    <input type="radio" id="12-week-plan" name="plan" value="12-week">
+                    <label for="12-week-plan">
+                        <div class="plan-header">
+                            <span>12-WEEK PLAN</span>
+                            <span>$97.00</span>
+                        </div>
+                        <div class="plan-price">
+                            <span>$1.15</span>
+                            <span>per day</span>
+                        </div>
+                    </label>
+                </div>
+        
+                <!-- New Lifetime Access Plan -->
+                <div class="plan-option lifetime-plan">
+                    <input type="radio" id="lifetime-plan" name="plan" value="lifetime">
+                    <label for="lifetime-plan">
+                        <div class="lifetime-plan-details">
+                            <span class="lifetime-plan-header">LIFETIME ACCESS</span>
+                            <span class="lifetime-plan-description">One-time payment for unlimited access</span>
+                        </div>
+                        <div class="lifetime-plan-price">
+                            <span>$297.00</span>
+                        </div>
+                    </label>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+        
+                
+
+                <div class="plan-info">
+                    <p>🎯 People using plan for 3 months achieve twice as many results as for 1 month</p>
+                    <p><small>*According to a research by iRiseUp Academy, 2023</small></p>
+                </div>
+
+                <div class="plan-button">
+                    <button class="card-button btn btn-primary get-plan-btn pulsate">GET MY PLAN</button>
+                </div>
+
+                <div class="subscription-info">
+                    <p>Extended every 4-week at the price of $39.99 if you do not cancel 24 hours before the renewal date in your account settings. <a href="{% url 'subscription_terms' %}">Subscription Terms</a>.</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="money-back-container">
+            <img src="{% static 'myapp/images/quiz/icon-money-back.svg' %}" alt="Money-Back Guarantee" class="money-back-icon">
+            <h2>Money-Back Guarantee</h2>
+            <p>We are so confident in our service that we are ready to offer a full refund within 30 days of purchase if you do not achieve initial results and can demonstrate you have followed the plan.</p>
+            <p>Learn more about all the conditions in our <a href="{% url 'subscription_terms' %}">Subscription Terms</a>.</p>
+        </div>
+    </div>
+</div>
+
+<div id="checkout-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Checkout</h2>
+        </div>
+        <h3><span style="color: #5860F8;">91% of users </span>are satisfied with the plan and stay with us after its completion</h3>
+        
+        <div id="payment-selection">
+            <button id="card-button" class="payment-selection-btn">Pay with Card</button>
+         <!--       <button id="paypal-button" class="payment-selection-btn">Pay with PayPal</button> --> 
+        </div>
+        
+        <div id="card-payment" class="payment-option" style="display:none;">
+            <h3 style="text-align: center;">Pay with Card</h3>
+            <!-- Inserting the six images here -->
+            <div class="card-icons">
+                <img src="{% static 'myapp/images/card_icons/1.svg' %}" alt="Card Icon 1" />
+                <img src="{% static 'myapp/images/card_icons/2.svg' %}" alt="Card Icon 2" />
+                <img src="{% static 'myapp/images/card_icons/3.svg' %}" alt="Card Icon 3" />
+                <img src="{% static 'myapp/images/card_icons/4.svg' %}" alt="Card Icon 4" />
+                <img src="{% static 'myapp/images/card_icons/5.svg' %}" alt="Card Icon 5" />
+                <img src="{% static 'myapp/images/card_icons/6.svg' %}" alt="Card Icon 6" />
+            </div>
+            <div class="form-container">
+                <h2>Fill Out Your Information</h2>
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="givenName">First Name</label>
+                        <input type="text" id="givenName" name="givenName" placeholder="e.g. John" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyName">Last Name</label>
+                        <input type="text" id="familyName" name="familyName" placeholder="e.g. Doe" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addressLine1">Address Line 1</label>
+                        <input type="text" id="addressLine1" name="addressLine1" placeholder="e.g. 1234 Elm Street" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="e.g. New York" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" placeholder="e.g. NY" class="form-control" required>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="countryCode">Country Code</label>
+                        <input type="text" id="countryCode" name="countryCode" placeholder="ex. US" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" name="phone" placeholder="e.g. +1 234 567 8900 (US)" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="e.g. yourname@example.com" class="form-control" required>
+                    </div>                    
+                    <div id="card-container" class="form-group"></div>
+                    <button type="submit" class="btn-submit">Pay Now</button>
+                </form>
+            </div>
+            
+            
+            <div class="pay-safe">
+                <img src="{% static 'myapp/images/card_icons/check_icon.png' %}" alt="Safe Icon" class="safe-icon" />
+                <span>Pay safe & secure</span>
+            </div>            
+        </div>
+        
+        
+        <div id="paypal-payment" class="payment-option" style="display:none;">
+            <h3 style="text-align: center;">Pay with PayPal</h3>
+            <div id="paypal-button-container"></div> <!-- PayPal button container -->
+            <div id="subscription-status" style="display: none; color: green; text-align: center; margin-top: 15px;"></div>
+        </div>
+
+        <!-- Add the subscription terms language below the payment options -->
+        <div class="subscription-terms mt-4">
+            <p style="text-align: center; font-size: 12px;">You agree that <strong id="selected-plan-price">$39.99</strong> will be as an intro offer, then <strong id="selected-plan-renewal-price">$39.99</strong> will be automatically billed every 4-weeks until you cancel in settings. <a href="{% url 'subscription_terms' %}">Subscription Terms</a>.</p>
+        </div>
+        
+    </div>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('checkout-modal');
+    const getPlanButtons = document.querySelectorAll('.get-plan-btn');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const cardBtn = document.getElementById('card-button');
+    const paypalBtn = document.getElementById('paypal-button');
+    const cardPaymentSection = document.getElementById('card-payment');
+    const paypalPaymentSection = document.getElementById('paypal-payment');
+    let squareInitialized = false;
+    let paypalInitialized = false;
+
+    // Initialize payment options visibility
+    cardPaymentSection.style.display = 'none';
+    paypalPaymentSection.style.display = 'none';
+
+    // Show modal when "GET MY PLAN" buttons are clicked
+    getPlanButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            modal.style.display = 'block';
+        });
+    });
+
+    // Square payment setup function
+    async function setupSquarePayments() {
+        if (squareInitialized) return; // Prevent re-initialization
+        const payments = Square.payments('sq0idp-jpJ9YFYpLwuh5nFx4B-qXg', '45B8XGXSPP8E3');
+        const card = await payments.card();
+        await card.attach('#card-container');
+
+        const payButton = document.getElementById('payment-form').querySelector('button[type="submit"]');
+        payButton.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                const result = await card.tokenize();
+                if (result.status === 'OK') {
+                    // Get selected plan and determine the amount
+                    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+                    const amount = determineAmountBasedOnPlan(selectedPlan);
+
+                    // New: Verify the buyer using SCA with CHARGE_AND_STORE intent
+                    const verificationToken = await verifyBuyer(payments, result.token, amount);
+
+                    // Send the payment request with the verification token
+                    const response = await fetch('/process-payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({
+                            source_id: result.token,
+                            plan: selectedPlan,
+                            amount: amount,
+                            verification_token: verificationToken  // New: Include verification token
+                        }),
+                    });
+
+                    const jsonResult = await response.json();
+
+                if (jsonResult.success) {
+                    window.location.href = '/success/';
+                } else {
+                    handlePaymentError(jsonResult.error);  // Handle errors in a friendly way
+                }
+            } else {
+                alert('Tokenization failed: ' + result.errors[0].message);
+            }
+        } catch (e) {
+            console.error(e.message);
+            alert('Payment failed: ' + e.message);
+        }
+    });
+    squareInitialized = true; // Set flag to prevent re-initialization
+}
+
+function handlePaymentError(error) {
+    let userMessage = 'An error occurred during payment.';
+    
+    if (error.includes('CARD_DECLINED')) {
+        userMessage = 'Your card was declined. Please try another payment method.';
+    } else if (error.includes('INSUFFICIENT_FUNDS')) {
+        userMessage = 'Insufficient funds. Please check your balance or use a different card.';
+    } else if (error.includes('EXPIRED_CARD')) {
+        userMessage = 'Your card has expired. Please use a different card.';
+    } else if (error.includes('NETWORK_ERROR')) {
+        userMessage = 'There was a network issue. Please try again later.';
+    } else if (error.includes('FRAUD_REJECTED')) {
+        userMessage = 'Your payment was rejected due to suspected fraud. Please contact your bank.';
+    }
+
+    alert(userMessage);  // Display user-friendly error message
+}
+
+    // Function to determine the amount based on the selected plan
+    function determineAmountBasedOnPlan(plan) {
+    if (plan === '1-week') {
+        return 1287;  // $12.87 in cents
+    } else if (plan === '4-week') {
+        return 3795;  // $37.95 in cents
+    } else if (plan === '12-week') {
+        return 9700;  // $97.00 in cents
+    } else if (plan === 'lifetime') {
+        return 29700;  // $297.00 in cents
+    } else {
+        return 0;  // Default to 0 for unrecognized plans
+    }
+}
+
+
+
+    // Function to set the selected plan in the session via AJAX
+        function setSelectedPlanInSession(plan) {
+            fetch('/set-selected-plan/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ plan: plan }),
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Plan set in session successfully');
+                } else {
+                    console.error('Failed to set plan in session');
+                }
+            });
+        }
+
+        // Event listener for plan selection
+        //document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+        //    planInput.addEventListener('change', function() {
+        //        setSelectedPlanInSession(this.value);
+        //    });
+        //});
+
+        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+            planInput.addEventListener('change', function() {
+                setSelectedPlanInSession(this.value);  
+            });
+        });
+
+
+
+    // New: Add the verifyBuyer function with the correct amount and CHARGE_AND_STORE intent
+    async function verifyBuyer(payments, token, amount) {
+        const verificationDetails = {
+            amount: (amount / 100).toFixed(2),  // Convert cents to dollars
+            currencyCode: 'USD',  // Ensure this matches the currency used in the BotTransaction
+            intent: 'CHARGE_AND_STORE',  // Intent for charging and storing the card
+            billingContact: {
+                // Collect billing details from the user input
+                addressLines: [
+                    document.getElementById('addressLine1').value,
+                ],
+                familyName: document.getElementById('familyName').value,
+                givenName: document.getElementById('givenName').value,
+                email: document.getElementById('email').value,
+                countryCode: document.getElementById('countryCode').value,
+                phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+            },
+        };
+
+        const verificationResults = await payments.verifyBuyer(
+            token,
+            verificationDetails
+        );
+        return verificationResults.token;
+    }
+
+    // PayPal payment setup function
+    async function setupPayPalPayments() {
+    if (paypalInitialized) return; // Prevent re-initialization
+
+    paypal.Buttons({
+        createSubscription: function (data, actions) {
+            // Retrieve the selected plan from radio buttons
+            const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+
+            // Send the selectedPlan to your backend for processing
+            return fetch('/get-paypal-plan-id/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for Django
+                },
+                body: JSON.stringify({
+                    'selected_plan': selectedPlan
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.plan_id) {
+                    // Create the PayPal subscription with the returned plan_id
+                    return actions.subscription.create({
+                        plan_id: data.plan_id,  // Use the plan ID returned from the server
+                    });
+                } else {
+                    console.error('Plan ID not returned from server');
+                }
+            });
+        },
+
+        onApprove: function (data, actions) {
+            // Get the subscription ID from the onApprove event
+            const subscriptionId = data.subscriptionID;
+
+            if (subscriptionId) {
+                // Redirect the user to approve the subscription
+                return fetch(`/complete-paypal-subscription/?subscription_id=${subscriptionId}`, {
+                    method: 'GET',
+                })
+                .then((response) => response.json())
+                .then((result) => {
+                    if (result.success) {
+                        // Redirect to success page or show a success message
+                        window.location.href = '/success/';
+                    } else {
+                        alert('Subscription failed: ' + result.error);
+                    }
+                })
+                .catch((err) => {
+                    console.error('Subscription error:', err);
+                    alert('An error occurred during subscription processing.');
+                });
+            } else {
+                alert('Subscription ID not found.');
+            }
+        },
+
+        onError: function (err) {
+            console.error('PayPal error:', err);
+            alert('An error occurred during PayPal payment: ' + err.message);
+        }
+    }).render('#paypal-button-container');  // Render PayPal buttons
+    paypalInitialized = true;  // Set initialized flag
+}
+
+
+const statusDiv = document.getElementById("subscription-status");
+if (statusDiv) {
+    statusDiv.innerHTML = "Your subscription is being processed. You will be notified once it's activated.";
+    statusDiv.style.display = "block";  // Make sure the div is visible
+} else {
+    console.error('Subscription status element not found');
+}
+
+
+// Function to set the selected plan in the session via AJAX
+async function setSelectedPlan(plan) {
+    try {
+        const response = await fetch('/set-selected-plan/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),  // Ensure CSRF token is being passed
+            },
+            body: JSON.stringify({ plan: plan })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            console.log('Plan set successfully');
+        } else {
+            alert('Failed to set plan: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error setting plan:', error);
+        alert('Error setting plan in session.');
+    }
+}
+
+// Event listener for plan selection
+
+        document.querySelectorAll('input[name="plan"]').forEach(planInput => {
+            planInput.addEventListener('change', function() {
+                setSelectedPlanInSession(this.value);  
+            });
+        });
+
+// Helper function to get CSRF token from cookies (Django uses CSRF tokens for POST requests)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+    // Event listeners for payment method buttons
+    cardBtn.addEventListener('click', function () {
+        cardPaymentSection.style.display = 'block';
+        paypalPaymentSection.style.display = 'none';
+        setupSquarePayments(); // Initialize Square payment setup
+    });
+
+    paypalBtn.addEventListener('click', function () {
+        paypalPaymentSection.style.display = 'block';
+        cardPaymentSection.style.display = 'none';
+        setupPayPalPayments(); // Initialize PayPal payment setup
+    });
+
+    // Event listener to close the modal
+    closeBtn.addEventListener('click', function () {
+        modal.style.display = 'none';
+        cardPaymentSection.style.display = 'none';
+        paypalPaymentSection.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+            cardPaymentSection.style.display = 'none';
+            paypalPaymentSection.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const planInputs = document.querySelectorAll('input[name="plan"]');
+    const selectedPlanPrice = document.getElementById('selected-plan-price');
+    const selectedPlanRenewalPrice = document.getElementById('selected-plan-renewal-price');
+
+    // Function to update the price in the modal
+    function updateSelectedPlanPrice() {
+        const selectedPlan = document.querySelector('input[name="plan"]:checked');
+        let price;
+
+        if (selectedPlan.value === '1-week') {
+            price = '12.87';  // 1-week plan
+        } else if (selectedPlan.value === '4-week') {
+            price = '37.95';  // 4-week plan
+        } else if (selectedPlan.value === '12-week') {
+            price = '97.00';  // 12-week plan
+        } else if (selectedPlan.value === 'lifetime') {
+            price = '297.00';  // Lifetime plan
+        }
+
+        selectedPlanPrice.textContent = `$${price}`;
+        selectedPlanRenewalPrice.textContent = `$${price}`;
+    }
+
+    // Call update function when the page loads to set the initial price
+    updateSelectedPlanPrice();
+
+    // Add event listener to update the price whenever a plan is selected
+    planInputs.forEach(plan => {
+        plan.addEventListener('change', updateSelectedPlanPrice);
+    });
+});
+
+// Initialize the timer duration (10 minutes)
+let duration = 10 * 60; // 10 minutes in seconds
+
+// Select the minutes and seconds elements
+const minutesElement = document.getElementById('minutes');
+const secondsElement = document.getElementById('seconds');
+
+// Function to start the countdown
+function startCountdown() {
+    const countdownInterval = setInterval(() => {
+        // Calculate minutes and seconds
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+
+        // Update the HTML with the current minutes and seconds
+        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
+        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
+
+        // Check if the timer has finished
+        if (duration <= 0) {
+            clearInterval(countdownInterval); // Stop the timer
+            // You can trigger any action you want when the timer ends here
+            alert('Countdown finished!');
+        } else {
+            duration--; // Decrease the duration by 1 second
+        }
+    }, 1000); // Run the function every 1000 milliseconds (1 second)
+}
+
+// Start the countdown when the page loads
+window.onload = startCountdown;
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Scroll to plan selection section when "Choose a Plan" is clicked
+    const choosePlanButton = document.querySelector('.choose-plan-btn');
+    if (choosePlanButton) {
+        choosePlanButton.addEventListener('click', function () {
+            const planSelectionSection = document.getElementById('plan-selection-section');
+            if (planSelectionSection) {
+                planSelectionSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+});
+
+</script>
+
+<style>
+
+/* Goal Box Styles */
+.goals-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Ensure boxes stretch to the same height */
+    gap: 10px; /* Space between the goal boxes */
+    width: 100%; /* Ensure full width for the container */
+    padding-left: 23px;
+    padding-bottom: 20px;
+}
+
+.goal-box {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+.goal-box h4 {
+    font-size: 0.875rem; /* Smaller heading font size */
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.goal-box p {
+    font-size: 1rem; /* Smaller font size for main text */
+    font-weight: bold;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.goal-box .goal-icon, .goal-box .target-icon {
+    margin-right: 8px;
+    font-size: 1.25rem; /* Smaller size for the icon */
+    color: #5860F8; /* Blue color for icons */
+}
+
+
+
+    .form-container {
+    background-color: #f9f9f9; /* Light grey background for the container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
+    max-width: 500px;
+    margin: 0 auto; /* Center the container */
+}
+
+.form-container h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center; /* Center the heading */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Adjusted for more compact spacing */
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    display: block;
+    color: #333; /* Darker text color for better contrast */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Light grey border */
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #5860F8; /* Change border color on focus */
+    outline: none;
+    box-shadow: 0 0 5px rgba(88, 96, 248, 0.5); /* Subtle shadow on focus */
+}
+
+.form-group input::placeholder {
+    color: #888; /* Placeholder color */
+    font-style: italic;
+}
+
+.btn-submit {
+    background-color: #5860F8;
+    color: white;
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.btn-submit:hover {
+    background-color: #3c4ab8;
+}
+
+
+    .readiness-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c2e4a; /* Darker shade of text */
+}
+
+.readiness-percentage {
+    color: #83c441; /* Green color */
+    font-weight: bold;
+}
+
+.readiness-box {
+    background-color: #f8f9fa; /* Light grey background */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px;
+    border: 1px solid #e0e0e0; /* Light border */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.highlighted-text {
+    color: #83c441; /* Green color for highlighted text */
+}
+
+.icon {
+    font-size: 1.5rem; /* Adjust size of the icon */
+}
+
+
+.ai-title {
+        font-size: 2.5rem; /* Large and bold heading */
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .ai-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ai-image {
+        max-width: 180px; /* Size of the AI image */
+        margin-right: 5px;
+    }
+
+    .ai-days {
+        text-align: left;
+    }
+
+    .ai-day {
+        font-size: 0.875rem;
+        font-weight: bold;
+        background-color: #fff;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .ai-day-desc {
+        font-size: 0.875rem;
+        color: #666;
+        margin-left: 10px;
+    }
+
+    .ai-benefits li {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .ai-benefits li::before {
+        content: attr(data-icon);
+        font-size: 1.5rem; /* Larger emoji size */
+        margin-right: 10px;
+    }
+
+.pay-safe {
+    text-align: center;
+    align-items: center;
+    background-color: #f4fdf4; /* Light green background color */
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #74b948; /* Green color for text */
+    margin-top: 10px; /* Space above the section */
+}
+
+.pay-safe .safe-icon {
+    width: 20px; /* Adjust the icon size as needed */
+    height: 20px;
+    margin-right: 8px; /* Space between the icon and the text */
+}
+
+
+.card-icons {
+    display: flex;
+    justify-content: space-between; /* Space out the icons evenly */
+    align-items: center; /* Align them vertically centered */
+    flex-wrap: wrap; /* Allow wrapping if needed on smaller screens */
+}
+
+.card-icons img {
+    width: 40px; /* Adjust the width as needed */
+    margin: 5px; /* Adjust the spacing between images */
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px; /* Adjust modal width as needed */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3{
+    padding-top: 8px;
+    font-size: 20px;
+    text-align: center;
+}
+
+
+/* Header styles */
+.modal-header {
+
+    display: flex;
+    justify-content: center; 
+    align-items: center; /* Align items vertically */
+    position: relative; /* Position elements within the header */
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
+.modal-header .close {
+    padding: 10px 15px;
+    background-color: #f3f4f6;
+    position: absolute;
+    left: 15px; /* Adjust the position of the close button to the left */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-header .close:hover {
+    color: black;
+}
+
+
+/* Body styles */
+.modal-body {
+    padding: 15px;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.modal-body h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.modal-body h2 .highlight {
+    color: #5860F8; /* Purple color */
+}
+#payment-selection {
+    display: flex;
+    justify-content: center; /* Centers the button */
+}
+
+.payment-selection-btn {
+    background-color: #f3f4f6;
+    border: 2px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%; /* Adjusts the button width */
+    max-width: 300px; /* Optional: limit the button width */
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#card-button {
+    background-color: #5860F8;
+    color: white;
+}
+
+
+#paypal-button {
+    background-color: #ffc439;
+    color: black;
+}
+
+.payment-option {
+    margin-top: 15px;
+}
+
+/* Card payment button styles */
+#card-payment button[type="submit"] {
+    background-color: #5860F8;
+    color: white;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#card-payment button[type="submit"]:hover {
+    background-color: #3c4ab8;
+}
+
+/* Subscription terms styles */
+.subscription-terms {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #666;
+    text-align: left;
+}
+
+.subscription-terms a {
+    color: #5860F8;
+    text-decoration: underline;
+}
+
+.subscription-terms a:hover {
+    text-decoration: none;
+}
+
+/* General button styles */
+.get-plan-btn {
+    background-color: #5860F8;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: white;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.get-plan-btn:hover {
+    background-color: #3c4ab8;
+}
+
+.pulsate {
+    animation: pulsate 1.5s infinite;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Reduce the shadow during scaling down */
+    }
+    50% {
+        transform: scale(1.05); /* Slightly larger scaling */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); /* Increase shadow during scaling up */
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Back to normal */
+    }
+}
+
+/* Header container styles */
+.header-container {
+    padding: 10px;
+}
+
+.countdown-timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: #5860F8; /* Match the color of the logo */
+}
+
+/* Money-back container styles */
+.money-back-container {
+    background-color: #f3f8f1;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.money-back-icon {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.money-back-container h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.money-back-container p {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.money-back-container a {
+    color: #2d7a2e;
+    text-decoration: underline;
+}
+
+.money-back-container a:hover {
+    text-decoration: none;
+}
+
+/* Plan option styles */
+.plan-option {
+    border: 2px solid #ddd; /* Default border color */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.plan-option input[type="radio"] {
+    display: none; /* Hide the default radio button */
+}
+
+.plan-option label {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+}
+
+.plan-option label:hover {
+    border-color: #4e73df; /* Change border color on hover */
+}
+
+.plan-option input[type="radio"]:checked + label {
+    border: 2px solid #4e73df; /* Highlight border when selected */
+    background: #f9fbff; /* Light background color for the selected option */
+    box-shadow: 0 0 10px rgba(78, 115, 223, 0.25); /* Add shadow for emphasis */
+}
+
+.plan-option.most-popular input[type="radio"]:checked + label {
+    background: #5860F8;
+    color: white;
+}
+
+.plan-option.most-popular input[type="radio"]:checked + label .most-popular-badge {
+    background: #fff;
+    color: #5860F8;
+    
+}
+
+.plan-header {
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.plan-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 1.5rem;
+    color: #333;
+    padding-left: 10px;
+}
+
+.plan-price span:last-child {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Specific styling for the "Most Popular" badge */
+.most-popular-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #5860F8;
+    color: white;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.most-popular-badge span::before {
+    content: "👍";
+    margin-right: 5px;
+}
+
+.plan-option.most-popular {
+    position: relative;
+}
+
+.plan-option.most-popular label {
+    border-radius: 10px;
+    background-color: #f0f4ff; /* Change background color */
+    box-shadow: 0 0 15px rgba(78, 115, 223, 0.15); /* Add shadow for the most popular option */
+}
+/* Lifetime Access Plan Styling */
+.plan-option.lifetime-plan {
+    border: 2px solid #28a745;
+    background-color: #f9f9f9; /* Neutral background */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.plan-option.lifetime-plan input[type="radio"] {
+    display: none; /* Hide default radio button */
+}
+
+.plan-option.lifetime-plan input[type="radio"]:checked + label {
+    border-color: #28a745; /* Green highlight when selected */
+    background-color: #f0fdf0; /* Light green background */
+}
+
+.plan-option.lifetime-plan label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Lifetime Plan Details */
+.lifetime-plan-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lifetime-plan-header {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #28a745;
+}
+
+.lifetime-plan-description {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Lifetime Plan Price Styling */
+.lifetime-plan-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+
+
+
+/* Progress bar styles */
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: auto;
+}
+
+.row.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.progress-bar-container {
+    position: relative;
+    width: 80%;  /* Adjust the width as necessary */
+    margin: 10px auto;
+}
+
+.progress-bar-wrapper {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.moderate {
+    width: 50%;
+    background: linear-gradient(to right, #FF0000, #FFFF00); /* From red to yellow */
+}
+
+.high {
+    width: 100%;
+    background: linear-gradient(to right, #FFFF00, #00FF00); /* From yellow to green */
+}
+
+.limited {
+    width: 50%;
+    background: linear-gradient(to right, #d0d0ff, #0000ff); /* From light blue to blue */
+}
+
+.progress-bar-label {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #555;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 5;
+    white-space: nowrap;
+}
+
+.progress-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 1rem;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+</style>
+{% endblock %}
+

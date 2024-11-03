@@ -1,0 +1,578 @@
+{% extends "myapp/base.html" %}
+{% load custom_filters %}
+{% block title %}BotService Menu{% endblock %}
+{% load static %}
+{% block content %}
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mobile container centered and padded */
+.mobile-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Center the BotService menu and ensure full visibility */
+.BotServicemenu_container {
+    width: 90%;
+    max-width: 1200px;
+    background: #fff;
+    padding: 25px;
+    padding-bottom: 60px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-sizing: border-box;
+    margin-bottom: 60px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+/* Tabs styling */
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #e7f1ff;
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
+/* BotService Section styling */
+.BotService-section {
+    margin-top: 20px;
+    display: none; /* Hide all sections initially */
+}
+
+.BotService-section.active {
+    display: block; /* Only the active section will be shown */
+}
+
+.BotService-section h2 {
+    font-size: 28px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.recommended-container h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 10px;
+    border-left: 5px solid #007bff;
+}
+
+/* Ensure the BotService card container is a flex container */
+.BotService-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This pushes content to the top and button to the bottom */
+    background-color: #f9faff;
+    border: 1px solid #e4e7ed;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    flex-basis: 240px;
+    max-width: 100%;
+    margin: 10px 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: auto;
+}
+
+.BotService-card.inactive {
+    background-color: #f0f0f0; /* Gray background for inactive BotServices */
+    filter: grayscale(100%); /* Optional: make the image grayscale */
+    cursor: not-allowed; /* Show not-allowed cursor for inactive cards */
+}
+
+/* Ensure full image visibility */
+.BotService-image img {
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.coming-soon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background-color: #6c757d;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+/* Ensure the button stays at the bottom of the card */
+.view-btn {
+    display: inline-block;
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.view-btn:hover {
+    background-color: #1e88e5;
+}
+
+.disabled-btn {
+    background-color: #6c757d;
+    pointer-events: none;
+}
+
+/* BotService grid */
+.BotService-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.mobile-nav {
+    display: none; /* Hidden by default */
+}
+
+/* Style for mobile navigation bar for the tabs */
+@media (max-width: 768px) {
+    .tabs {
+        display: none; /* Hide the tabs */
+    }
+
+    /* Dropdown menu for mobile navigation */
+    .mobile-nav {
+        display: block;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .mobile-nav select {
+        padding: 10px;
+        border-radius: 25px;
+        font-weight: bold;
+        width: 100%;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+}
+
+/* Modify BotService cards for mobile view */
+@media (max-width: 768px) {
+    .BotService-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .BotService-card {
+        width: 100%; /* Full width BotService cards on mobile */
+        max-width: 400px;
+    }
+}
+
+
+/* Full page loader */
+#full-page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10000;
+    display: none; /* Initially hidden */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+/* Bouncing balls animation */
+.bouncing-balls {
+    display: flex;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.bouncing-balls span {
+    display: inline-block;
+    margin: 0 10px;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.bouncing-balls span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.bouncing-balls span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+/* Pagination */
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px; /* Reduced space between buttons */
+}
+
+.step-links a, .step-links .current {
+    padding: 6px 10px; /* Smaller padding for a cleaner look */
+    border-radius: 25px; /* Still keep the rounded style */
+    background-color: #007bff; /* Main button color */
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    min-width: 40px; /* Small width to accommodate arrows */
+    white-space: nowrap;
+}
+
+.step-links a:hover {
+    background-color: #0056b3;
+}
+
+.step-links .current {
+    background-color: #0056b3;
+    pointer-events: none;
+}
+
+.step-links a.disabled {
+    background-color: #ddd;
+    color: #999;
+    pointer-events: none;
+}
+
+.step-links a:first-child, .step-links a:last-child {
+    background-color: #f44336; /* First/last in red */
+    color: white;
+}
+
+.step-links a:first-child:hover, .step-links a:last-child:hover {
+    background-color: #d32f2f;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .step-links {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto; /* Allows scrolling if there are many page numbers */
+    }
+
+    .step-links a, .step-links .current {
+        margin: 0 5px;
+        padding: 0;
+        font-size: 1rem; /* Font size similar to the design */
+        border: none;
+        background: none;
+        color: #e57373; /* Light red color for inactive numbers */
+        text-decoration: none;
+    }
+
+    .step-links .current {
+        font-weight: bold;
+        color: #e64a19; /* Darker red for active page */
+        border-bottom: 2px solid #e64a19; /* Underline active page */
+    }
+
+    .step-links a:hover {
+        color: #d32f2f;
+    }
+
+    .step-links a.disabled {
+        color: #ddd;
+    }
+
+    .step-links .next-btn {
+        color: #e64a19; /* Red color for next button */
+        font-weight: bold;
+        text-decoration: none;
+        margin-left: 15px;
+    }
+
+    .step-links .next-btn:hover {
+        color: #d32f2f; /* Darker red on hover */
+    }
+}
+
+
+
+
+
+</style>
+<div id="full-page-loader">
+    <div class="bouncing-balls">
+        <span>🟡</span>
+        <span>🔵</span>
+        <span>🟢</span>
+    </div>
+</div>
+
+<div class="mobile-container">
+    <div class="BotServicemenu_container">
+        {% if user.is_authenticated %}
+        <h1>Hi {{ user.username }}, Let's Continue Learning!</h1>
+        {% else %}
+        <p>Hi! Take your quiz today. <a href="{% url 'start_quiz' %}">Click Here!</a></p>
+        {% endif %}
+        <!-- Tabs for Ongoing, Completed, Saved, Favorite -->
+        <div class="tabs">
+            <div class="tab active" data-tab="ongoing">Ongoing ({{ ongoing_BotServices|length }})</div>
+            <div class="tab" data-tab="completed">Completed ({{ completed_BotServices|length }})</div>
+            <div class="tab" data-tab="saved">Saved ({{ saved_BotServices|length }})</div>
+            <div class="tab" data-tab="favorite">Favorite ({{ favorite_BotServices|length }})</div>
+        </div>
+
+        <div class="mobile-nav">
+            <select id="BotService-section-selector">
+                <option value="ongoing" selected>Ongoing ({{ ongoing_BotServices|length }})</option>
+                <option value="completed">Completed ({{ completed_BotServices|length }})</option>
+                <option value="saved">Saved ({{ saved_BotServices|length }})</option>
+                <option value="favorite">Favorite ({{ favorite_BotServices|length }})</option>
+            </select>
+        </div>
+
+        <!-- Ongoing BotServices Section -->
+        <div id="ongoing" class="BotService-section active">
+            <h2>Ongoing BotServices</h2>
+            {% if ongoing_BotServices %}
+                <div class="BotService-grid">
+                    {% for BotService in ongoing_BotServices %}
+                        <div class="BotService-card {% if not BotService.is_active %}inactive{% endif %}">
+                            <div class="BotService-image">
+                                <img src="{{ BotService.image.url }}" alt="BotService Image">
+                                {% if not BotService.is_active %}
+                                    <span class="badge badge-secondary coming-soon">Coming Soon</span>
+                                {% endif %}
+                            </div>
+                            <h3>{{ BotService.title }}</h3>
+                            <p>{{ BotService.units }} Units • {{ BotService.hours }} Hours</p>
+                            <p>{{ BotService.description }}</p>
+                            {% if BotService.is_active %}
+                                <a href="{% url 'BotService_detail' BotService.id %}" class="view-btn">Continue BotService</a>
+                            {% else %}
+                                <span class="view-btn disabled-btn">Not Available</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No ongoing BotServices.</p>
+            {% endif %}
+        </div>
+
+        <!-- Completed BotServices Section -->
+        <div id="completed" class="BotService-section">
+            <h2>Completed BotServices</h2>
+            {% if completed_BotServices %}
+                <div class="BotService-grid">
+                    {% for BotService in completed_BotServices %}
+                        <div class="BotService-card">
+                            <div class="BotService-image">
+                                <img src="{{ BotService.image.url }}" alt="BotService Image">
+                            </div>
+                            <h3>{{ BotService.title }}</h3>
+                            <p>{{ BotService.units }} Units • {{ BotService.hours }} Hours</p>
+                            <p>{{ BotService.description }}</p>
+                            <a href="{% url 'BotService_detail' BotService.id %}" class="view-btn">View BotService</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No completed BotServices.</p>
+            {% endif %}
+        </div>
+
+        <!-- Saved BotServices Section -->
+        <div id="saved" class="BotService-section">
+            <h2>Saved BotServices</h2>
+            {% if saved_BotServices %}
+                <div class="BotService-grid">
+                    {% for BotService_access in saved_BotServices %}
+                        <div class="BotService-card">
+                            <div class="BotService-image">
+                                <img src="{{ BotService_access.BotService.image.url }}" alt="BotService Image">
+                            </div>
+                            <h3>{{ BotService_access.BotService.title }}</h3>
+                            <p>{{ BotService_access.BotService.units }} Units • {{ BotService_access.BotService.hours }} Hours</p>
+                            <p>{{ BotService_access.BotService.description }}</p>
+                            <a href="{% url 'BotService_detail' BotService_access.BotService.id %}" class="view-btn">Continue BotService</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No saved BotServices.</p>
+            {% endif %}
+        </div>
+
+        <!-- Favorite BotServices Section -->
+        <div id="favorite" class="BotService-section">
+            <h2>Favorite BotServices</h2>
+            {% if favorite_BotServices %}
+                <div class="BotService-grid">
+                    {% for BotService_access in favorite_BotServices %}
+                        <div class="BotService-card">
+                            <div class="BotService-image">
+                                <img src="{{ BotService_access.BotService.image.url }}" alt="BotService Image">
+                            </div>
+                            <h3>{{ BotService_access.BotService.title }}</h3>
+                            <p>{{ BotService_access.BotService.units }} Units • {{ BotService_access.BotService.hours }} Hours</p>
+                            <p>{{ BotService_access.BotService.description }}</p>
+                            <a href="{% url 'BotService_detail' BotService_access.BotService.id %}" class="view-btn">Continue BotService</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No favorite BotServices.</p>
+            {% endif %}
+        </div>
+
+        <!-- Recommended Section -->
+        <div class="recommended-container">
+            <h2>Recommended for You</h2>
+            <div class="BotService-grid">
+                {% for BotService in recommended_BotServices_page %}
+                    <div class="BotService-card {% if not BotService.is_active %}inactive{% endif %}">
+                        <div class="BotService-image">
+                            <img src="{{ BotService.image.url }}" alt="BotService Image">
+                            {% if not BotService.is_active %}
+                                <span class="badge badge-secondary coming-soon">Coming Soon</span>
+                            {% endif %}
+                        </div>
+                        <h3>{{ BotService.title }}</h3>
+                        <p>{{ BotService.units }} Units • {{ BotService.hours }} Hours</p>
+                        {% if BotService.is_active %}
+                            <a href="{% url 'BotService_detail' BotService.id %}" class="view-btn">View Details</a>
+                        {% else %}
+                            <span class="view-btn disabled-btn">Not Available</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination controls -->
+            <div class="pagination">
+                <span class="step-links">
+                    {% for num in recommended_BotServices_page.paginator.page_range %}
+                        {% if num == recommended_BotServices_page.number %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}" onclick="showLoader()">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if recommended_BotServices_page.has_next %}
+                        <a href="?page={{ recommended_BotServices_page.next_page_number }}" class="next-btn" onclick="showLoader()">NEXT</a>
+                    {% else %}
+                        <a class="disabled">NEXT</a>
+                    {% endif %}
+                </span>
+            </div>
+            
+                       
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // Tabs functionality
+    document.querySelectorAll('.tab').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.querySelectorAll('.BotService-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        });
+    });
+
+    // Loader functionality
+    function showLoader() {
+        document.getElementById('full-page-loader').style.display = 'flex';
+    }
+
+    function hideLoader() {
+        document.getElementById('full-page-loader').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        hideLoader();  // Hide loader when the page is fully loaded
+
+        // Show loader only for pagination links (next, previous, etc.)
+        document.querySelectorAll('.pagination a').forEach(element => {
+            element.addEventListener('click', showLoader);
+        });
+    });
+
+    window.addEventListener('load', hideLoader);
+</script>
+
+{% include 'myapp/BotService_list/footer_BotService.html' %}
+{% endblock %}
