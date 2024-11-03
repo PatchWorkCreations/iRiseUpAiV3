@@ -6,8 +6,7 @@ from .models import AIUserAccess
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BotService, AIUserAccess
 from django.contrib.auth.decorators import login_required
-
-
+from square.client import Client
 
 
 def personalized_plan(request):
