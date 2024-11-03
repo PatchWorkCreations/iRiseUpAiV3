@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
-from models import AIUserAccess
+from .models import AIUserAccess
 from django.shortcuts import render, get_object_or_404, redirect
 from models import BotService, AIUserAccess
 from django.contrib.auth.decorators import login_required
