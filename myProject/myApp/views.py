@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from .models import AIUserAccess
 from django.shortcuts import render, get_object_or_404, redirect
-from models import BotService, AIUserAccess
+from .models import BotService, AIUserAccess
 from django.contrib.auth.decorators import login_required
 
 
@@ -236,7 +236,7 @@ def send_welcomepassword_email(user_email, random_password):
 from django.utils import timezone
 from datetime import timedelta
 import logging
-from models import BotService, AIUserAccess
+from .models import BotService, AIUserAccess
 
 logger = logging.getLogger(__name__)
 
@@ -501,7 +501,7 @@ def process_payment(request):
 
 
 from django.shortcuts import render
-from models import BotService, AIUserAccess
+from .models import BotService, AIUserAccess
 from django.core.paginator import Paginator
 
 def coursemenu(request):
