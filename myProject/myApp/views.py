@@ -323,9 +323,9 @@ def process_payment(request):
             verification_token = data.get('verification_token')
 
             # Ensure the correct email is being used from the user's current session
-            user_email = request.session.get('email')
+            user_email = data.get('email')
             if not user_email:
-                logger.error("Email is missing from session. Cannot proceed with payment.")
+                logger.error("Email is missing from form data. Cannot proceed with payment.")
                 return JsonResponse({"error": "Email is missing from session."}, status=400)
 
             # Ensure the amount is valid based on the selected plan
@@ -344,7 +344,7 @@ def process_payment(request):
             if customer_result.is_error():
                 logger.error("Customer creation failed: %s", customer_result.errors)
                 user = User.objects.get(email=user_email)
-                BotTransaction.objects.create(
+                BotBotTransaction.objects.create(
                     user=user,
                     amount=amount,
                     subscription_type=selected_plan,
@@ -407,7 +407,7 @@ def process_payment(request):
             )
             if card_result.is_error():
                 logger.error("Card storage failed: %s", card_result.errors)
-                BotTransaction.objects.create(
+                BotBotTransaction.objects.create(
                     user=user,
                     amount=amount,
                     subscription_type=selected_plan,
@@ -433,10 +433,7 @@ def process_payment(request):
                 # Send the welcome email
                 send_welcomepassword_email(user_email, random_password)
 
-            logger.info(f"User {user_email} processed for payment.")
-
-            # Step 5: Save any associated information to the user (optional step)
-            save_quiz_response(request, user)
+            logger.info(f"User {user_email} processed for payment.") 
 
             # Step 6: Store the customer_id and card_id in the database
             BotUserPaymentInfo.objects.update_or_create(
@@ -469,8 +466,8 @@ def process_payment(request):
                 }
             )
 
-            # Step 9: Create a BotTransaction with a success status and recurring info
-            BotTransaction.objects.create(
+            # Step 9: Create a BotBotTransaction with a success status and recurring info
+            BotBotTransaction.objects.create(
                 user=user,
                 amount=amount,
                 subscription_type=selected_plan,
@@ -485,7 +482,7 @@ def process_payment(request):
             logger.error("Unexpected error occurred: %s", str(e), exc_info=True)
             user = User.objects.get(email=user_email) if 'user_email' in locals() else None
             if user:
-                BotTransaction.objects.create(
+                BotBotTransaction.objects.create(
                     user=user,
                     amount=amount,
                     subscription_type=selected_plan,
