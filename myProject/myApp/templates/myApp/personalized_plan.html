@@ -419,7 +419,8 @@ function handlePaymentError(error) {
 
 
     // Function to set the selected plan in the session via AJAX
-        function setSelectedPlanInSession(plan) {
+            function setSelectedPlanInSession(plan) {
+            console.log("Selected plan:", plan);  // Log the selected plan
             fetch('/set-selected-plan/', {
                 method: 'POST',
                 headers: {
@@ -432,17 +433,11 @@ function handlePaymentError(error) {
                 if (data.success) {
                     console.log('Plan set in session successfully');
                 } else {
-                    console.error('Failed to set plan in session');
+                    console.error('Failed to set plan in session:', data.error);  // Log error details if setting fails
                 }
-            });
+            }).catch(error => console.error('Error in fetch:', error));  // Log fetch errors
         }
 
-        // Event listener for plan selection
-        //document.querySelectorAll('input[name="plan"]').forEach(planInput => {
-        //    planInput.addEventListener('change', function() {
-        //        setSelectedPlanInSession(this.value);
-        //    });
-        //});
 
         document.querySelectorAll('input[name="plan"]').forEach(planInput => {
             planInput.addEventListener('change', function() {

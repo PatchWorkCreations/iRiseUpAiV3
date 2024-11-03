@@ -45,17 +45,32 @@ square_client = Client(
     environment='production',
 )
 
+import json
+import logging
+from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
+
 def setSelectedPlanInSession(request):
-    selected_plan = request.POST.get('plan')
-    logger.info(f"Selected plan: {selected_plan}")  # Log the plan value received
-    allowed_plans = ['1-week', '4-week', '12-week', 'lifetime']
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            selected_plan = data.get('plan')
+            logger.info(f"Selected plan received by backend: {selected_plan}")
 
-    if selected_plan not in allowed_plans:
-        logger.error(f"Invalid plan selected: {selected_plan}")  # Log the invalid plan case
-        return JsonResponse({'success': False, 'error': 'Invalid plan selected.'})
+            allowed_plans = ['1-week', '4-week', '12-week', 'lifetime']
+            if selected_plan not in allowed_plans:
+                logger.error(f"Invalid plan selected: {selected_plan}")
+                return JsonResponse({'success': False, 'error': 'Invalid plan selected.'})
 
-    request.session['selected_plan'] = selected_plan
-    return JsonResponse({'success': True})
+            request.session['selected_plan'] = selected_plan
+            return JsonResponse({'success': True})
+        except Exception as e:
+            logger.error("Error in setSelectedPlanInSession:", exc_info=True)
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
 
 
 def determine_amount_based_on_plan(selected_plan):
